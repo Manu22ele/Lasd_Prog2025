@@ -17,7 +17,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class TraversableContainer {
+class TraversableContainer : public virtual TestableContainer<Data>{
   // Must extend TestableContainer<Data>
 
 private:
@@ -31,42 +31,41 @@ protected:
 public:
 
   // Destructor
-  // ~TraversableContainer() specifiers
+  virtual ~TraversableContainer() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types is not possible.
+  TraversableContainer &operator=(const TraversableContainer &) = delete; // Copy assignment of abstract types is not possible.
 
   // Move assignment
-  // type operator=(argument); // Move assignment of abstract types is not possible.
+  TraversableContainer &operator=(TraversableContainer &&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract types might be possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract types might be possible.
+  bool operator==(const TraversableContainer &) const noexcept = delete; // Comparison of abstract types might be possible.
+  bool operator!=(const TraversableContainer &) const noexcept = delete; // Comparison of abstract types might be possible.
 
   /* ************************************************************************ */
 
   // Specific member function
 
-  // using TraverseFun = std::function<void(const Data &)>;
+  using TraverseFun = std::function<void(const Data &)>;
 
-  // type Traverse(arguments) specifiers;
+  virtual void Traverse(TraverseFun) const = 0;
 
-  // template <typename Accumulator>
-  // using FoldFun = std::function<Accumulator(const Data &, const Accumulator &)>;
+  template <typename Accumulator>
+  using FoldFun = std::function<Accumulator(const Data &, const Accumulator &)>;
 
-  // template <typename Accumulator>
-  // type Fold(arguments) specifiers;
+  template <typename Accumulator>
+  virtual Accumulator Fold(FoldFun<Accumulator>, const Accumulator&) const = 0;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from TestableContainer)
 
-  // type Exists(argument) specifiers; // Override TestableContainer member
-
+  virtual bool Exists(const Data&) const noexcept override;
 };
 
 /* ************************************************************************** */
@@ -86,48 +85,46 @@ protected:
 public:
 
   // Destructor
-  // ~PreOrderTraversableContainer() specifiers
+  virtual ~PreOrderTraversableContainer() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types is not possible.
-
-  // Move assignment
-  // type operator=(argument); // Move assignment of abstract types is not possible.
+  PreOrderTraversableContainer& operator=(const PreOrderTraversableContainer&) = delete;
+  PreOrderTraversableContainer& operator=(PreOrderTraversableContainer&&) noexcept = delete;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract types might be possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract types might be possible.
+  bool operator==(const PreOrderTraversableContainer&) const = delete;
+  bool operator!=(const PreOrderTraversableContainer&) const = delete;
 
   /* ************************************************************************ */
 
   // Specific member function
 
-  // using typename TraversableContainer<Data>::TraverseFun;
+  using typename TraversableContainer<Data>::TraverseFun;
 
-  // type PreOrderTraverse(arguments) specifiers;
+  virtual void PreOrderTraverse(TraverseFun) const = 0;
 
-  // template <typename Accumulator>
-  // using FoldFun = typename TraversableContainer<Data>::FoldFun<Accumulator>;
+  template <typename Accumulator>
+  using FoldFun = typename TraversableContainer<Data>::template FoldFun<Accumulator>;
 
-  // template <typename Accumulator>
-  // type PreOrderFold(arguments) specifiers;
+  template <typename Accumulator>
+  virtual Accumulator PreOrderFold(FoldFun<Accumulator>, const Accumulator&) const = 0;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from TraversableContainer)
 
-  // type Traverse(arguments) specifiers; // Override TraversableContainer member
+  virtual void Traverse(TraverseFun) const override = 0;
 
 };
 
 /* ************************************************************************** */
 
 template <typename Data>
-class PostOrderTraversableContainer {
+class PostOrderTraversableContainer : public virtual TraversableContainer<Data> {
   // Must extend TraversableContainer<Data>
 
 private:
@@ -141,41 +138,39 @@ protected:
 public:
 
   // Destructor
-  // ~PostOrderTraversableContainer() specifiers
+  virtual ~PostOrderTraversableContainer() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types is not possible.
-
-  // Move assignment
-  // type operator=(argument); // Move assignment of abstract types is not possible.
+  PostOrderTraversableContainer& operator=(const PostOrderTraversableContainer&) = delete;
+  PostOrderTraversableContainer& operator=(PostOrderTraversableContainer&&) noexcept = delete;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract types might be possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract types might be possible.
+  bool operator==(const PostOrderTraversableContainer&) const = delete;
+  bool operator!=(const PostOrderTraversableContainer&) const = delete;
 
   /* ************************************************************************ */
 
   // Specific member function
 
-  // using typename TraversableContainer<Data>::TraverseFun;
+  using typename TraversableContainer<Data>::TraverseFun;
 
-  // type PostOrderTraverse(arguments) specifiers;
+  virtual void PostOrderTraverse(TraverseFun) const = 0;
 
-  // template <typename Accumulator>
-  // using FoldFun = typename TraversableContainer<Data>::FoldFun<Accumulator>;
+  template <typename Accumulator>
+  using FoldFun = typename TraversableContainer<Data>::template FoldFun<Accumulator>;
 
-  // template <typename Accumulator>
-  // type PostOrderFold(arguments) specifiers;
+  template <typename Accumulator>
+  virtual Accumulator PostOrderFold(FoldFun<Accumulator>, const Accumulator&) const = 0;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from TraversableContainer)
 
-  // type Traverse(arguments) specifiers; // Override TraversableContainer member
+  virtual void Traverse(TraverseFun) const override = 0;
 
 };
 
