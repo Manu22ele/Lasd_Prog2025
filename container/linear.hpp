@@ -162,7 +162,7 @@ protected:
 
   // Auxiliary member functions
 
-  // ...
+  void insertionSort(unsigned long, unsigned long) noexcept;
 
 };
 
