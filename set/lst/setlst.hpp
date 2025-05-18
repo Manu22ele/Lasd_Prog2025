@@ -14,7 +14,8 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class SetLst {
+class SetLst : public virtual Set<Data>,
+               public virtual List<Data> {
   // Must extend Set<Data>,
   //             List<Data>
 
@@ -25,92 +26,103 @@ private:
 protected:
 
   // using Container::???;
+  using Container::size;
 
   // ...
 
 public:
 
   // Default constructor
-  // SetLst() specifiers;
+  SetLst() = default;
 
   /* ************************************************************************ */
 
   // Specific constructors
-  // SetLst(argument) specifiers; // A set obtained from a TraversableContainer
-  // SetLst(argument) specifiers; // A set obtained from a MappableContainer
+  // A set obtained from a TraversableContainer
+  SetLst(const TraversableContainer<Data>&); // A set obtained from a TraversableContainer
+  SetLst(MappableContainer<Data>&&); // A set obtained from a MappableContainer
 
   /* ************************************************************************ */
 
   // Copy constructor
-  // SetLst(argument) specifiers;
+  SetLst(const SetLst<Data>&); 
 
   // Move constructor
-  // SetLst(argument) specifiers;
+  SetLst(SetLst<Data>&&) noexcept;
 
   /* ************************************************************************ */
 
   // Destructor
-  // ~SetLst() specifiers;
+  virtual ~SetLst() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument) specifiers;
+  inline SetLst<Data>& operator=(const SetLst<Data>&);
 
   // Move assignment
-  // type operator=(argument) specifiers;
+  inline SetLst<Data>& operator=(SetLst<Data>&&) noexcept;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
+  inline bool operator==(const SetLst<Data>&) const noexcept;
+  inline bool operator!=(const SetLst<Data>&) const noexcept;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from OrderedDictionaryContainer)
 
-  // type Min(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  // type MinNRemove(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  // type RemoveMin(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
+  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
+  inline Data Min() const;
+  inline Data MinRemove() const;
+  inline Data RemoveMin() const;
 
-  // type Max(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  // type MaxNRemove(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  // type RemoveMax(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
+  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
+  inline Data Max() const; 
+  inline Data MaxRemove() const;
+  inline Data RemoveMax() const;
+  
+  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
+  inline Data Predecessor(const Data&) const;
+  inline Data PredecessorNRemove(const Data&);
+  inline Data RemovePredecessor(const Data&);
 
-  // type Predecessor(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  // type PredecessorNRemove(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  // type RemovePredecessor(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-
-  // type Successor(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  // type SuccessorNRemove(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  // type RemoveSuccessor(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
+  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
+  inline Data Successor(const Data&) const; 
+  inline Data SuccessorNRemove(const Data&);
+  inline Data RemoveSuccessor(const Data&);
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from DictionaryContainer)
 
-  // type Insert(argument) specifiers; // Override DictionaryContainer member (copy of the value)
-  // type Insert(argument) specifiers; // Override DictionaryContainer member (move of the value)
-  // type Remove(argument) specifiers; // Override DictionaryContainer member
+  // Specific member functions (inherited from DictionaryContainer)
+
+  inline void Insert(const Data&);       // Insert by copy
+  inline void Insert(Data&&);             // Insert by move
+  inline void Remove(const Data&);        // Remove an element
+
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
-  // type operator[](argument) specifiers; // Override LinearContainer member (must throw std::out_of_range when out of range)
+  inline Data& operator[](size_t index);              // Access an element by index (throws std::out_of_range if out of range)
+  inline const Data& operator[](size_t index) const;   // Const access to an element by index (throws std::out_of_range if out of range)
+
 
   /* ************************************************************************** */
 
   // Specific member function (inherited from TestableContainer)
 
-  // type Exists(argument) specifiers; // Override TestableContainer member
+  inline bool Exists(const Data&) const noexcept;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from ClearableContainer)
 
-  // type Clear() specifiers; // Override ClearableContainer member
+  inline void Clear() noexcept override;
 
 protected:
 

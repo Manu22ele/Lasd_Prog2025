@@ -4,8 +4,9 @@
 
 /* ************************************************************************** */
 
+#include "../container/container.hpp"
 #include "../container/dictionary.hpp"
-#include "../container/traversable.hpp"
+#include "../container/linear.hpp"
 
 /* ************************************************************************** */
 
@@ -14,7 +15,9 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class Set {
+class Set : public virtual OrderedDictionaryContainer<Data>,
+            public virtual LinearContainer<Data>,
+            public virtual ClearableContainer {
   // Must extend OrderedDictionaryContainer<Data>,
   //             LinearContainer<Data>,
   //             ClearableContainer
@@ -26,11 +29,12 @@ private:
 protected:
 
   // ...
+  
 
 public:
 
   // Destructor
-  // ~Set() specifiers
+  virtual ~Set() = default;
 
   /* ************************************************************************ */
 
