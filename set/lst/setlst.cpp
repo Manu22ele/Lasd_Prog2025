@@ -1,4 +1,8 @@
 
+#include <stdexcept>
+#include <cstddef>
+#include <new>
+
 namespace lasd {
 
 /* ************************************************************************** */
@@ -404,18 +408,45 @@ inline Data SetLst<Data>::RemoveSuccessor(const Data& value) {
 
 template <typename Data>
 inline void SetLst<Data>::Insert(const Data& value) {
-  // Assicurarsi che l'elemento non esista già nel set
-  if (!Exists(value)) {
-    List<Data>::InsertAtBack(value);  // Inserisce alla fine della lista
+  if (Exists(value)) return;
+
+  Node* newNode = new Node(value);
+
+  if (!head || value < head->value) {
+    newNode->next = head;
+    head = newNode;
+  } else {
+    Node* curr = head;
+    while (curr->next && curr->next->value < value) {
+      curr = curr->next;
+    }
+    newNode->next = curr->next;
+    curr->next = newNode;
   }
+
+  ++size;
 }
+
 
 template <typename Data>
 inline void SetLst<Data>::Insert(Data&& value) {
-  // Assicurarsi che l'elemento non esista già nel set
-  if (!Exists(value)) {
-    List<Data>::InsertAtBack(std::move(value));  // Inserisce alla fine della lista
+  if (Exists(value)) return;
+
+  Node* newNode = new Node(std::move(value));
+
+  if (!head || newNode->value < head->value) {
+    newNode->next = head;
+    head = newNode;
+  } else {
+    Node* curr = head;
+    while (curr->next && curr->next->value < newNode->value) {
+      curr = curr->next;
+    }
+    newNode->next = curr->next;
+    curr->next = newNode;
   }
+
+  ++size;
 }
 
 template <typename Data>
@@ -495,18 +526,29 @@ inline const Data& SetLst<Data>::operator[](size_t index) const {
 
 // Membri specific TestableContainer
 template <typename Data>
-inline // Membri specifici TestableContainer
+inline bool SetLst<Data>::Exists(const Data& value) const noexcept {
+  if (size == 0) return false;
 
-template <typename Data>
-bool SetLst<Data>::Exists(const Data& data) const noexcept {
-  // Iteriamo attraverso la lista e controlliamo se l'elemento esiste
-  for (auto it = Begin(); it != End(); ++it) {
-    if (*it == data) {  // Se l'elemento è uguale a quello che cerchiamo, ritorniamo true
+  size_t left = 0;
+  size_t right = size - 1;
+
+  while (left <= right) {
+    size_t mid = left + (right - left) / 2;
+    const Data& midVal = (*this)[mid];
+
+    if (midVal == value) {
       return true;
+    } else if (midVal < value) {
+      left = mid + 1;
+    } else {
+      if (mid == 0) break; // Evita underflow
+      right = mid - 1;
     }
   }
-  return false;  // Se non abbiamo trovato l'elemento, ritorniamo false
+
+  return false;
 }
+
 
 /* ************************************************************************** */
 

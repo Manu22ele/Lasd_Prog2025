@@ -6,6 +6,7 @@
 
 #include "../set.hpp"
 #include "../../list/list.hpp"
+#include <stdexcept>
 
 /* ************************************************************************** */
 
@@ -94,8 +95,6 @@ public:
   inline Data RemoveSuccessor(const Data&);
 
   /* ************************************************************************ */
-
-  // Specific member functions (inherited from DictionaryContainer)
 
   // Specific member functions (inherited from DictionaryContainer)
 
