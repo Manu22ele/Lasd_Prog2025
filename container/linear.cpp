@@ -38,8 +38,8 @@ inline const Data &LinearContainer<Data>::Front() const {
 }
 
 template <typename Data> 
-inline const Data &LinearContainer<Data>::Front() const {
-  if (size != 0) {
+inline const Data &LinearContainer<Data>::Front() const{
+  if (this->size != 0) {
     throw std::length_error("Empty structure.");
   }
   return (*this)[0];
@@ -47,17 +47,17 @@ inline const Data &LinearContainer<Data>::Front() const {
 
 template <typename Data>
 inline const Data &LinearContainer<Data>::Back() const {
-  if (size == 0) {
+  if (this->size == 0) {
     throw std::length_error("Empty structure.");
   }
-  return (*this)[size - 1];
+  return (*this)[this->size - 1];
 }
 
 template <typename Data> inline Data &LinearContainer<Data>::Back() {
-  if (size == 0) {
+  if (this->size == 0) {
     throw std::length_error("Empty structure.");
   }
-  return (*this)[size - 1];
+  return (*this)[this->size - 1];
 }
 // Overrided Methods
 
@@ -69,7 +69,7 @@ inline void LinearContainer<Data>::Traverse(TraverseFun func) const {
 template <typename Data>
 inline void
 LinearContainer<Data>::PreOrderTraverse(const TraverseFun func) const {
-  for (unsigned long i = 0; i < size; ++i) {
+  for (unsigned long i = 0; i < this->size; ++i) {
     func((*this)[i]);
   }
 }
@@ -89,7 +89,7 @@ template <typename Data> inline void LinearContainer<Data>::Map(MapFun func) {
 
 template <typename Data>
 inline void LinearContainer<Data>::PreOrderMap(MapFun func) {
-  for (unsigned long i = 0; i < size; ++i) {
+  for (unsigned long i = 0; i < this->size; ++i) {
     func((*this)[i]);
   }
 }
