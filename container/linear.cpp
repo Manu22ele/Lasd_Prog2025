@@ -79,25 +79,26 @@ template <typename Data>
 inline void
 LinearContainer<Data>::PostOrderTraverse(const TraverseFun func) const {
 
-  for (unsigned long i = size; i > 0;) {
+  for (unsigned long i = this->size; i > 0;) {
     func((*this)[--i]);
   }
 }
 
-template <typename Data> inline void LinearContainer<Data>::Map(MapFun func) {
+template <typename Data> 
+inline void MutableLinearContainer<Data>::Map(MapFun func) {
   PreOrderMap(func);
 }
 
 template <typename Data>
-inline void LinearContainer<Data>::PreOrderMap(MapFun func) {
+inline void MutableLinearContainer<Data>::PreOrderMap(MapFun func) {
   for (unsigned long i = 0; i < this->size; ++i) {
     func((*this)[i]);
   }
 }
 
 template <typename Data>
-inline void LinearContainer<Data>::PostOrderMap(MapFun func) {
-  for (unsigned long i = size; i > 0;) {
+inline void MutableLinearContainer<Data>::PostOrderMap(MapFun func) {
+  for (unsigned long i = this->size; i > 0;) {
     func((*this)[--i]);
   }
 }
@@ -125,7 +126,7 @@ inline bool SortableLinearContainer<Data>::operator!=(
 
 template <typename Data>
 inline void SortableLinearContainer<Data>::Sort() noexcept {
-  insertionSort(0, size - 1);
+  insertionSort(0, this->size - 1);
 }
 
 template <typename Data>
@@ -138,7 +139,7 @@ void SortableLinearContainer<Data>::insertionSort(unsigned long p,
 
     currVal = (*this)[i];
     t = i;
-    while (t != ULONG_MAX && t > p && (*this)[t - 1] > currVal) {
+    while (t > p && (*this)[t - 1] > currVal) {
       (*this)[t] = (*this)[t - 1];
       --t;
     }

@@ -155,8 +155,14 @@ public:
 
   /* ************************************************************************ */
 
+  // Comparison operators
+
+  virtual bool operator==(const SortableLinearContainer &) const noexcept;
+
+  virtual bool operator!=(const SortableLinearContainer &) const noexcept;
+
   // Specific member function
-  virtual void Sort() = 0;
+  virtual void Sort() noexcept = 0;
 
 protected:
 
