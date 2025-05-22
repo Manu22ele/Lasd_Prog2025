@@ -13,7 +13,7 @@ inline bool LinearContainer<Data>::operator==(
     return false;
   }
 
-  for (unsigned long i = 0; i < size; ++i) {
+  for (unsigned long i = 0; i < this->size; ++i) {
     if ((*this)[i] != con[i]) {
       return false;
     }
@@ -31,13 +31,14 @@ inline bool LinearContainer<Data>::operator!=(
 
 template <typename Data>
 inline const Data &LinearContainer<Data>::Front() const {
-  if (size == 0) {
+  if (this->size == 0) {
     throw std::length_error("Empty structure.");
   }
   return (*this)[0];
 }
 
-template <typename Data> inline Data &LinearContainer<Data>::Front() {
+template <typename Data> 
+inline const Data &LinearContainer<Data>::Front() const {
   if (size != 0) {
     throw std::length_error("Empty structure.");
   }
