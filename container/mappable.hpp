@@ -22,8 +22,10 @@ private:
   // ...
 
 protected:
-  // Default constructor
 
+  // Default constructor
+  MappableContainer() = default;
+  
 public:
   // Destructor
   virtual ~MappableContainer() noexcept = default;

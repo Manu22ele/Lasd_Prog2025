@@ -41,8 +41,8 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  virtual bool operator==(const LinearContainer&) const = 0;
-  virtual bool operator!=(const LinearContainer&) const = 0;
+  virtual bool operator==(const LinearContainer&) const noexcept;
+  virtual bool operator!=(const LinearContainer&) const noexcept;
 
   /* ************************************************************************ */
 

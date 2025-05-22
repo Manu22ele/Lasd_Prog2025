@@ -9,7 +9,7 @@ namespace lasd {
 template <typename Data>
 inline bool LinearContainer<Data>::operator==(
     const LinearContainer<Data> &con) const noexcept {
-  if (size != con.size) {
+  if (this->size != con.size) {
     return false;
   }
 
