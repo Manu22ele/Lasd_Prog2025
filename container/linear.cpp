@@ -38,8 +38,8 @@ inline const Data &LinearContainer<Data>::Front() const {
 }
 
 template <typename Data> 
-inline const Data &LinearContainer<Data>::Front() const{
-  if (this->size != 0) {
+inline  Data &MutableLinearContainer<Data>::Front() {
+  if (this->size == 0) {
     throw std::length_error("Empty structure.");
   }
   return (*this)[0];
@@ -53,7 +53,8 @@ inline const Data &LinearContainer<Data>::Back() const {
   return (*this)[this->size - 1];
 }
 
-template <typename Data> inline Data &LinearContainer<Data>::Back() {
+template <typename Data> 
+inline Data &MutableLinearContainer<Data>::Back() {
   if (this->size == 0) {
     throw std::length_error("Empty structure.");
   }
