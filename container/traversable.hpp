@@ -111,7 +111,7 @@ public:
   using FoldFun = typename TraversableContainer<Data>::template FoldFun<Accumulator>;
 
   template <typename Accumulator>
-  Accumulator PreOrderFold(FoldFun<Accumulator>, const Accumulator&) const = 0;
+  Accumulator PreOrderFold(FoldFun<Accumulator>, const Accumulator&) const;
 
   /* ************************************************************************ */
 
@@ -164,7 +164,7 @@ public:
   using FoldFun = typename TraversableContainer<Data>::template FoldFun<Accumulator>;
 
   template <typename Accumulator>
-  Accumulator PostOrderFold(FoldFun<Accumulator>, const Accumulator&) const = 0;
+  Accumulator PostOrderFold(FoldFun<Accumulator>, const Accumulator&) const;
 
   /* ************************************************************************ */
 
