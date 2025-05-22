@@ -15,7 +15,7 @@ class Container {
 
 private:
 
-  // ...
+  // ...
 
 protected:
 
@@ -59,11 +59,11 @@ class ClearableContainer : public virtual Container {
 
 private:
 
-  // ...
+  // ...
 
 protected:
 
-  // ...
+  // ...
 
 public:
 
@@ -97,11 +97,11 @@ class ResizableContainer : public virtual ClearableContainer {
 
 private:
 
-  // ...
+  // ...
 
 protected:
 
-  // ...
+  // ...
 
 public:
 
