@@ -102,16 +102,16 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  inline List &operator=(const List &);
+  virtual List &operator=(const List &);
 
   // Move assignment
-  inline List &operator=(List &&) noexcept;
+  virtual List &operator=(List &&) noexcept;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  inline bool operator==(const List &) const noexcept;
-  inline bool operator!=(const List &) const noexcept;
+  virtual bool operator==(const List &) const noexcept;
+  virtual bool operator!=(const List &) const noexcept;
 
   /* ************************************************************************ */
 
@@ -132,32 +132,32 @@ public:
   // Specific member functions (inherited from MutableLinearContainer)
   
   // Override MutableLinearContainer's operator[] (must throw std::out_of_range when out of range)
-  inline Data& operator[](unsigned long) override; 
-  inline const Data& operator[](unsigned long) const override;
+  virtual Data& operator[](unsigned long) override; 
+  virtual const Data& operator[](unsigned long) const override;
 
   // Override MutableLinearContainer member (must throw std::length_error when empty)
-  inline Data& Front() override;
-  inline const Data& Front() const override;
+  virtual Data& Front() override;
+  virtual const Data& Front() const override;
 
   // type Back() specifiers; // Override MutableLinearContainer member (must throw std::length_error when empty)
-  inline Data& Back() override;
-  inline const Data& Back() const override;
+  virtual Data& Back() override;
+  virtual const Data& Back() const override;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
   // Override LinearContainer member (must throw std::out_of_range when out of range)
-  inline Data& operator[](unsigned long index) override;
-  inline const Data& operator[](unsigned long index) const override;  
+  virtual Data& operator[](unsigned long index) override;
+  virtual const Data& operator[](unsigned long index) const override;  
 
   // Override LinearContainer member (must throw std::length_error when empty)
-  inline Data& Front() override;
-  inline const Data& Front() const override;
+  virtual Data& Front() override;
+  virtual const Data& Front() const override;
 
   // Override LinearContainer member (must throw std::length_error when empty)
-  inline Data& Back() override;
-  inline const Data& Back() const override;
+  virtual Data& Back() override;
+  virtual const Data& Back() const override;
 
   /* ************************************************************************ */
 
@@ -167,21 +167,21 @@ public:
   using typename MappableContainer<Data>::MapFun;
 
   // Override MappableContainer member
-  inline void Map(MapFun) override;
+  virtual void Map(MapFun) override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderMappableContainer)
 
   // Override PreOrderMappableContainer member
-  inline void PreOrderMap(MapFun) override;
+  virtual void PreOrderMap(MapFun) override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderMappableContainer)
 
   // Override PostOrderMappableContainer member
-  inline void PostOrderMap(MapFun) override;
+  virtual void PostOrderMap(MapFun) override;
 
   /* ************************************************************************ */
 
@@ -191,28 +191,28 @@ public:
   using typename TraversableContainer<Data>::TraverseFun;
 
   // Override TraversableContainer member
-  inline void Traverse(TraverseFun) const override;
+  virtual void Traverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderTraversableContainer)
 
   // Override PreOrderTraversableContainer member
-  inline void PreOrderTraverse(TraverseFun) const override;
+  virtual void PreOrderTraverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderTraversableContainer)
 
   // Override PostOrderTraversableContainer member
-  inline void PostOrderTraverse(TraverseFun) const override;
+  virtual void PostOrderTraverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from ClearableContainer)
 
   // Override ClearableContainer member
-  inline void Clear() noexcept override;
+  virtual void Clear() noexcept override;
 
 protected:
 
@@ -224,7 +224,7 @@ protected:
 
     void PostOrderTraverse(TraverseFun, Node*) const;
 
-    inline void clear(Node*) noexcept;
+    virtual void clear(Node*) noexcept;
 
 };
 

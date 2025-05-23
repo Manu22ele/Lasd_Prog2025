@@ -33,12 +33,12 @@ List<Data>::Node::~Node() = default;
 
 // Comparison operators
 template <typename Data>
-inline bool List<Data>::Node::operator==(const Node &n) const noexcept {
+bool List<Data>::Node::operator==(const Node &n) const noexcept {
   return (value == n.value && next == n.next);
 }
 
 template <typename Data> 
-inline bool List<Data>::Node::operator!=(const Node &n) const noexcept {
+bool List<Data>::Node::operator!=(const Node &n) const noexcept {
   return !(*this == n);
 }
 
@@ -151,7 +151,7 @@ List<Data>& List<Data>::operator=(List<Data>&& l) noexcept {
 
 // Comparison operators
 template <typename Data>
-inline bool List<Data>::operator==(const List<Data> &l) const noexcept {
+bool List<Data>::operator==(const List<Data> &l) const noexcept {
   if (size != l.size)
     return false;
 
@@ -168,7 +168,7 @@ inline bool List<Data>::operator==(const List<Data> &l) const noexcept {
 }
 
 template <typename Data>
-inline bool List<Data>::operator!=(const List<Data> &l) const noexcept {
+bool List<Data>::operator!=(const List<Data> &l) const noexcept {
   return !(*this == l);
 }
 
@@ -379,7 +379,7 @@ const Data& List<Data>::Back() const {
 // Overrided Methods
 
 template <typename Data>
-inline void List<Data>::Map(MapFun mapFunc) {
+void List<Data>::Map(MapFun mapFunc) {
   Node* temp = head;
   while (temp) {
     mapFunc(temp->value);  // Applica la funzione mappante all'elemento
@@ -388,17 +388,17 @@ inline void List<Data>::Map(MapFun mapFunc) {
 }
 
 template <typename Data>
-inline void List<Data>::PreOrderMap(MapFun mapFunc) {
+void List<Data>::PreOrderMap(MapFun mapFunc) {
   Map(mapFunc);  // Pre-order e post-order sono uguali in una lista
 }
 
 template <typename Data>
-inline void List<Data>::PostOrderMap(MapFun mapFunc) {
+void List<Data>::PostOrderMap(MapFun mapFunc) {
   Map(mapFunc);  // Pre-order e post-order sono uguali in una lista
 }
 
 template <typename Data>
-inline void List<Data>::Traverse(TraverseFun traverseFunc) const {
+void List<Data>::Traverse(TraverseFun traverseFunc) const {
   Node* temp = head;
   while (temp) {
     traverseFunc(temp->value);  // Applica la funzione di traversamento all'elemento
@@ -407,18 +407,18 @@ inline void List<Data>::Traverse(TraverseFun traverseFunc) const {
 }
 
 template <typename Data>
-inline void List<Data>::PreOrderTraverse(TraverseFun traverseFunc) const {
+void List<Data>::PreOrderTraverse(TraverseFun traverseFunc) const {
   Traverse(traverseFunc);  // Pre-order in una lista è semplicemente scorrere la lista
 }
 
 template <typename Data>
-inline void List<Data>::PostOrderTraverse(TraverseFun traverseFunc) const {
+void List<Data>::PostOrderTraverse(TraverseFun traverseFunc) const {
   Traverse(traverseFunc);  // Post-order in una lista è semplicemente scorrere la lista
 }
 
 
 template <typename Data>
-inline void List<Data>::Clear() noexcept {
+void List<Data>::Clear() noexcept {
   clear(head);           // Dealloca i nodi
   head = tail = nullptr; // Azzera i puntatori
   size = 0;              // Azzera la dimensione
@@ -464,7 +464,7 @@ void List<Data>::PostOrderTraverse(TraverseFun traverseFunc, Node* node) const {
 
 // Funzione di supporto per cancellare i nodi ricorsivamente
 template <typename Data>
-inline void List<Data>::clear(Node* node) noexcept {
+void List<Data>::clear(Node* node) noexcept {
   if (node) {
     clear(node->next);  // Chiamata ricorsiva per il prossimo nodo
     delete node;        // Dealloca il nodo corrente
