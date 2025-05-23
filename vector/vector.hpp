@@ -14,8 +14,8 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class Vector : public virtual ResizableContainer<Data>,
-               public virtual MutableLinearContainer<Data> {
+class Vector : public virtual MutableLinearContainer<Data>,
+               public virtual ResizableContainer {
   // Must extend MutableLinearContainer<Data>,
   //             ResizableContainer
 
