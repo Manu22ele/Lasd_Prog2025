@@ -14,7 +14,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class List : public virtual ClearContainer<Data>,
+class List : public virtual ClearableContainer,
              public virtual MutableLinearContainer<Data> {
   // Must extend MutableLinearContainer<Data>,
   //             ClearableContainer
