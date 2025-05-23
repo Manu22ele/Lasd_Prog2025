@@ -86,7 +86,7 @@ template <typename Data> List<Data>::List(const List<Data> &l) {
 
 
 // Move constructor
-template <typename Data> List<Data>::List(List &&l) {
+template <typename Data> List<Data>::List(List &&l) noexcept{
   std::swap(size, l.size);
   std::swap(head, l.head);
   std::swap(tail, l.tail);
@@ -95,7 +95,7 @@ template <typename Data> List<Data>::List(List &&l) {
 
 // Destructor
 template <typename Data>
-List<Data>::~List() {
+List<Data>::~List() noexcept {
   Clear();  // Libera tutti i nodi e azzera i puntatori
 }
 
@@ -318,29 +318,6 @@ Data List<Data>::BackNRemove() {
   return data;
 }
 
-template <typename Data>
-Data& List<Data>::operator[](unsigned long index) {
-  if (index >= size)
-    throw std::out_of_range("Index out of range");
-
-  Node* temp = head;
-  for (unsigned long i = 0; i < index; ++i) {
-    temp = temp->next;
-  }
-  return temp->value;
-}
-
-template <typename Data>
-const Data& List<Data>::operator[](unsigned long index) const {
-  if (index >= size)
-    throw std::out_of_range("Index out of range");
-
-  Node* temp = head;
-  for (unsigned long i = 0; i < index; ++i) {
-    temp = temp->next;
-  }
-  return temp->value;
-}
 
 
 template <typename Data>
