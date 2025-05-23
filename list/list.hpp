@@ -147,17 +147,7 @@ public:
 
   // Specific member functions (inherited from LinearContainer)
 
-  // Override LinearContainer member (must throw std::out_of_range when out of range)
-  virtual Data& operator[](unsigned long index) override;
-  virtual const Data& operator[](unsigned long index) const override;  
-
-  // Override LinearContainer member (must throw std::length_error when empty)
-  virtual Data& Front() override;
-  virtual const Data& Front() const override;
-
-  // Override LinearContainer member (must throw std::length_error when empty)
-  virtual Data& Back() override;
-  virtual const Data& Back() const override;
+  //(operator[], Front, Back) already declared above
 
   /* ************************************************************************ */
 
