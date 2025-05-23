@@ -172,5 +172,19 @@ SortableVector<Data>& SortableVector<Data>::operator=(SortableVector<Data>&& con
   return *this;
 }
 
+template <typename Data>
+void Vector<Data>::Traverse(typename TraversableContainer<Data>::TraverseFun fun) const {
+  for (unsigned long i = 0; i < size; ++i) {
+    fun(elements[i]);
+  }
+}
+
+template <typename Data>
+void Vector<Data>::Map(typename MappableContainer<Data>::MapFun fun) {
+  for (unsigned long i = 0; i < size; ++i) {
+    fun(elements[i]);
+  }
+}
+
 
 } // namespace lasd

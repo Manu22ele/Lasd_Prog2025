@@ -1,4 +1,3 @@
-
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
@@ -32,6 +31,9 @@ protected:
 
 public:
 
+  using LinearContainer<Data>::operator==;
+  using LinearContainer<Data>::operator!=;
+
   // Default constructor
   Vector() = default;
 
@@ -39,12 +41,12 @@ public:
 
   // Specific constructors
   Vector(const unsigned long initSize) { // A vector with a given initial dimension
-   size = initSize;
-   elements = new Data[initSize]();
-};
+    size = initSize;
+    elements = new Data[initSize]();
+  };
 
   Vector(const TraversableContainer<Data> &); // A vector obtained from a TraversableContainer
-  Vector(MappableContainer<Data> &&); // A vector obtained from a MappableContainer
+  Vector(MappableContainer<Data> &&);          // A vector obtained from a MappableContainer
 
   /* ************************************************************************ */
 
@@ -62,10 +64,10 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  virtual Vector<Data>& operator=(const Vector<Data> &);
+  virtual Vector<Data> &operator=(const Vector<Data> &);
 
   // Move assignment
-  virtual Vector<Data>& operator=(Vector<Data> &&) noexcept;
+  virtual Vector<Data> &operator=(Vector<Data> &&) noexcept;
 
   /* ************************************************************************ */
 
@@ -78,13 +80,13 @@ public:
   // Specific member functions (inherited from MutableLinearContainer)
 
   // Override MutableLinearContainer member (must throw std::out_of_range when out of range)
-  virtual Data& operator[](unsigned long index) override;              
+  virtual Data &operator[](unsigned long index) override;
 
   // Override MutableLinearContainer member (must throw std::length_error when empty)
-  virtual Data& Front() override;              
+  virtual Data &Front() override;
 
   // Override MutableLinearContainer member (must throw std::length_error when empty)
-  virtual Data& Back() override;              
+  virtual Data &Back() override;
 
   /* ************************************************************************ */
 
@@ -98,6 +100,12 @@ public:
 
   // Override LinearContainer member (must throw std::length_error when empty)
   virtual const Data &Back() const override;
+
+  // Override TraversableContainer member
+  virtual void Traverse(typename TraversableContainer<Data>::TraverseFun) const override;
+
+  // Override MappableContainer member
+  virtual void Map(typename MappableContainer<Data>::MapFun) override;
 
   /* ************************************************************************ */
 
@@ -138,6 +146,9 @@ protected:
 
 public:
 
+  // Porta in visibilità gli operator= della base Vector per evitare hiding
+  using Vector<Data>::operator=;
+
   // Default constructor
   SortableVector() = default;
 
@@ -145,24 +156,24 @@ public:
 
   // Specific constructors
   // A vector with a given initial dimension
-  virtual SortableVector(unsigned long initSize) : Vector<Data>(initSize) {};
+  SortableVector(unsigned long initSize) : Vector<Data>(initSize) {};
 
   // A vector obtained from a TraversableContainer
-  virtual SortableVector(const TraversableContainer<Data> &container) : Vector<Data>(container) {};
+  SortableVector(const TraversableContainer<Data> &container) : Vector<Data>(container) {};
 
   // A vector obtained from a MappableContainer
-  virtual SortableVector(MappableContainer<Data> &&container) 
-     : Vector<Data>::Vector(std::move(container)) {};
+  SortableVector(MappableContainer<Data> &&container)
+      : Vector<Data>::Vector(std::move(container)) {};
 
   /* ************************************************************************ */
 
   // Copy constructor
-  virtual SortableVector(const SortableVector<Data>& con)
-    : Vector<Data>(con) {};  
+  SortableVector(const SortableVector<Data> &con)
+      : Vector<Data>(con) {};
 
   // Move constructor
-  virtual SortableVector(SortableVector<Data>&& con) noexcept
-    : Vector<Data>(std::move(con)) {};  
+  SortableVector(SortableVector<Data> &&con) noexcept
+      : Vector<Data>(std::move(con)) {};
 
   /* ************************************************************************ */
 
@@ -171,11 +182,17 @@ public:
 
   /* ************************************************************************ */
 
-  // Copy assignment
-  virtual SortableVector<Data>& operator=(const SortableVector<Data>& con);
+  // Copy assignment override che chiama l’operatore base per chiarezza e per evitare warning
+  SortableVector<Data> &operator=(const SortableVector<Data> &con) {
+    Vector<Data>::operator=(con);
+    return *this;
+  }
 
-  // Move assignment
-  virtual SortableVector<Data>& operator=(SortableVector<Data>&& con) noexcept;
+  // Move assignment override che chiama l’operatore base per chiarezza e per evitare warning
+  SortableVector<Data> &operator=(SortableVector<Data> &&con) noexcept {
+    Vector<Data>::operator=(std::move(con));
+    return *this;
+  }
 
 protected:
 
@@ -185,8 +202,7 @@ protected:
 
 /* ************************************************************************** */
 
-
-}
+} // namespace lasd
 
 #include "vector.cpp"
 
