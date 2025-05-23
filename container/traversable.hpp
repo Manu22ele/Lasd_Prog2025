@@ -71,7 +71,7 @@ public:
 /* ************************************************************************** */
 
 template <typename Data>
-class PreOrderTraversableContainer {
+class PreOrderTraversableContainer : public virtual TraversableContainer<Data> {
   // Must extend TraversableContainer<Data>
 
 private:
@@ -117,7 +117,7 @@ public:
 
   // Specific member function (inherited from TraversableContainer)
 
-  virtual void Traverse(TraverseFun) const override = 0;
+  virtual void Traverse(TraverseFun) const override;
 
 };
 
@@ -170,7 +170,7 @@ public:
 
   // Specific member function (inherited from TraversableContainer)
 
-  virtual void Traverse(TraverseFun) const override = 0;
+  virtual void Traverse(TraverseFun) const override;
 
 };
 

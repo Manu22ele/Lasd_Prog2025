@@ -1,4 +1,3 @@
-
 namespace lasd {
 
 // Linear Container
@@ -7,13 +6,13 @@ namespace lasd {
 // Operators
 
 template <typename Data>
-inline bool LinearContainer<Data>::operator==(
+bool LinearContainer<Data>::operator==(
     const LinearContainer<Data> &con) const noexcept {
-  if (this->size != con.size) {
+  if (this->Size() != con.Size()) {   // <-- uso Size() invece di size
     return false;
   }
 
-  for (unsigned long i = 0; i < this->size; ++i) {
+  for (unsigned long i = 0; i < this->Size(); ++i) {
     if ((*this)[i] != con[i]) {
       return false;
     }
@@ -22,7 +21,7 @@ inline bool LinearContainer<Data>::operator==(
 }
 
 template <typename Data>
-inline bool LinearContainer<Data>::operator!=(
+bool LinearContainer<Data>::operator!=(
     const LinearContainer<Data> &con) const noexcept {
   return !(*this == con);
 }
@@ -30,75 +29,72 @@ inline bool LinearContainer<Data>::operator!=(
 // Specific Methods
 
 template <typename Data>
-inline const Data &LinearContainer<Data>::Front() const {
-  if (this->size == 0) {
+const Data &LinearContainer<Data>::Front() const {
+  if (this->Size() == 0) {
     throw std::length_error("Empty structure.");
   }
   return (*this)[0];
 }
 
 template <typename Data> 
-inline  Data &MutableLinearContainer<Data>::Front() {
-  if (this->size == 0) {
+Data &MutableLinearContainer<Data>::Front() {
+  if (this->Size() == 0) {
     throw std::length_error("Empty structure.");
   }
   return (*this)[0];
 }
 
 template <typename Data>
-inline const Data &LinearContainer<Data>::Back() const {
-  if (this->size == 0) {
+const Data &LinearContainer<Data>::Back() const {
+  if (this->Size() == 0) {
     throw std::length_error("Empty structure.");
   }
-  return (*this)[this->size - 1];
+  return (*this)[this->Size() - 1];
 }
 
 template <typename Data> 
-inline Data &MutableLinearContainer<Data>::Back() {
-  if (this->size == 0) {
+Data &MutableLinearContainer<Data>::Back() {
+  if (this->Size() == 0) {
     throw std::length_error("Empty structure.");
   }
-  return (*this)[this->size - 1];
+  return (*this)[this->Size() - 1];
 }
 // Overrided Methods
 
 template <typename Data>
-inline void LinearContainer<Data>::Traverse(TraverseFun func) const {
+void LinearContainer<Data>::Traverse(TraverseFun func) const {
   PreOrderTraverse(func);
 }
 
 template <typename Data>
-inline void
-LinearContainer<Data>::PreOrderTraverse(const TraverseFun func) const {
-  for (unsigned long i = 0; i < this->size; ++i) {
+void LinearContainer<Data>::PreOrderTraverse(const TraverseFun func) const {
+  for (unsigned long i = 0; i < this->Size(); ++i) {
     func((*this)[i]);
   }
 }
 
 template <typename Data>
-inline void
-LinearContainer<Data>::PostOrderTraverse(const TraverseFun func) const {
-
-  for (unsigned long i = this->size; i > 0;) {
+void LinearContainer<Data>::PostOrderTraverse(const TraverseFun func) const {
+  for (unsigned long i = this->Size(); i > 0;) {
     func((*this)[--i]);
   }
 }
 
 template <typename Data> 
-inline void MutableLinearContainer<Data>::Map(MapFun func) {
+void MutableLinearContainer<Data>::Map(MapFun func) {
   PreOrderMap(func);
 }
 
 template <typename Data>
-inline void MutableLinearContainer<Data>::PreOrderMap(MapFun func) {
-  for (unsigned long i = 0; i < this->size; ++i) {
+void MutableLinearContainer<Data>::PreOrderMap(MapFun func) {
+  for (unsigned long i = 0; i < this->Size(); ++i) {
     func((*this)[i]);
   }
 }
 
 template <typename Data>
-inline void MutableLinearContainer<Data>::PostOrderMap(MapFun func) {
-  for (unsigned long i = this->size; i > 0;) {
+void MutableLinearContainer<Data>::PostOrderMap(MapFun func) {
+  for (unsigned long i = this->Size(); i > 0;) {
     func((*this)[--i]);
   }
 }
@@ -111,13 +107,13 @@ inline void MutableLinearContainer<Data>::PostOrderMap(MapFun func) {
 // Operators
 
 template <typename Data>
-inline bool SortableLinearContainer<Data>::operator==(
+bool SortableLinearContainer<Data>::operator==(
     const SortableLinearContainer<Data> &con) const noexcept {
   return LinearContainer<Data>::operator==(con);
 }
 
 template <typename Data>
-inline bool SortableLinearContainer<Data>::operator!=(
+bool SortableLinearContainer<Data>::operator!=(
     const SortableLinearContainer<Data> &con) const noexcept {
   return !(*this == con);
 }
@@ -125,8 +121,8 @@ inline bool SortableLinearContainer<Data>::operator!=(
 // Specific Methods
 
 template <typename Data>
-inline void SortableLinearContainer<Data>::Sort() noexcept {
-  insertionSort(0, this->size - 1);
+void SortableLinearContainer<Data>::Sort() noexcept {
+  insertionSort(0, this->Size() - 1);
 }
 
 template <typename Data>

@@ -102,6 +102,8 @@ public:
   MutableLinearContainer& operator=(MutableLinearContainer&&) noexcept = delete;
 
   /* ************************************************************************ */
+   
+  using LinearContainer<Data>::operator[];
 
   // Specific member functions
   virtual Data& operator[](unsigned long) = 0; // (mutable version; throws std::out_of_range)
