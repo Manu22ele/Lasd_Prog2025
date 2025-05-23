@@ -116,17 +116,17 @@ public:
 
   // Specific member function (inherited from MappableContainer)
   using typename MappableContainer<Data>::MapFun;
-  virtual void Map(MapFun) override = 0;
+  virtual void Map(MapFun) override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderMappableContainer)
-  virtual void PreOrderMap(MapFun) override = 0;
+  virtual void PreOrderMap(MapFun) override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderMappableContainer)
-  virtual void PostOrderMap(MapFun) override = 0;
+  virtual void PostOrderMap(MapFun) override;
 
 };
 

@@ -188,8 +188,7 @@ public:
   // Move assignment override che chiama l’operatore base per chiarezza e per evitare warning
   SortableVector<Data> &operator=(SortableVector<Data> &&con) noexcept;
 
-  // Implementa Sort() della base SortableLinearContainer
-  virtual void Sort() noexcept override;
+  void sort() noexcept override;
 
 protected:
 
