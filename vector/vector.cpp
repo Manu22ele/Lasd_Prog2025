@@ -194,5 +194,7 @@ void SortableVector<Data>::Sort() noexcept {
   insertionSort(0, this->size - 1);
 }
 
+template class SortableVector<int>;    // Aggiungi per i tipi che usi
+template class SortableVector<double>;
 
 } // namespace lasd
