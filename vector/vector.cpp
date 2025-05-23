@@ -186,5 +186,16 @@ void Vector<Data>::Map(typename MappableContainer<Data>::MapFun fun) {
   }
 }
 
+// SortableVector
+
+template <typename Data>
+void SortableVector<Data>::Sort() noexcept {
+  // Chiamiamo il metodo di ordinamento fornito da Vector,
+  // oppure implementiamo un semplice insertion sort qui.
+
+  // Esempio con insertionSort (supponendo sia disponibile)
+  insertionSort(0, this->size - 1);
+}
+
 
 } // namespace lasd

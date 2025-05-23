@@ -183,16 +183,10 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment override che chiama l’operatore base per chiarezza e per evitare warning
-  SortableVector<Data> &operator=(const SortableVector<Data> &con) {
-    Vector<Data>::operator=(con);
-    return *this;
-  }
+  SortableVector<Data> &operator=(const SortableVector<Data> &con);
 
   // Move assignment override che chiama l’operatore base per chiarezza e per evitare warning
-  SortableVector<Data> &operator=(SortableVector<Data> &&con) noexcept {
-    Vector<Data>::operator=(std::move(con));
-    return *this;
-  }
+  SortableVector<Data> &operator=(SortableVector<Data> &&con) noexcept;
 
 protected:
 
