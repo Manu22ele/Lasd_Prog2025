@@ -13,7 +13,7 @@ namespace lasd {
 // Constructors and Destructors
 
 template <typename Data>
-inline Vector<Data>::Vector(const TraversableContainer<Data>& container)
+Vector<Data>::Vector(const TraversableContainer<Data>& container)
     : Vector(container.Size()) {  // delegating constructor
   unsigned long i = 0;
   container.Traverse([this, &i](const Data& data) {
@@ -23,7 +23,7 @@ inline Vector<Data>::Vector(const TraversableContainer<Data>& container)
 
 
 template <typename Data>
-inline Vector<Data>::Vector(MappableContainer<Data>&& container)
+Vector<Data>::Vector(MappableContainer<Data>&& container)
     : Vector(container.Size()) {
   unsigned long i = 0;
   container.Map([this, &i](Data& data) {
@@ -32,7 +32,7 @@ inline Vector<Data>::Vector(MappableContainer<Data>&& container)
 }
 
 template <typename Data>
-inline Vector<Data>::Vector(const Vector<Data>& vec)
+Vector<Data>::Vector(const Vector<Data>& vec)
     : Vector(vec.size) {
   for (unsigned long i = 0; i < size; ++i) {
     elements[i] = vec.elements[i];
@@ -41,7 +41,7 @@ inline Vector<Data>::Vector(const Vector<Data>& vec)
 
 
 template <typename Data>
-inline Vector<Data>::Vector(Vector<Data>&& vec) noexcept {
+Vector<Data>::Vector(Vector<Data>&& vec) noexcept {
   std::swap(size, vec.size);
   std::swap(elements, vec.elements);
 }
@@ -49,14 +49,14 @@ inline Vector<Data>::Vector(Vector<Data>&& vec) noexcept {
 // Operators
 
 template <typename Data>
-inline Vector<Data>& Vector<Data>::operator=(const Vector<Data>& vec) {
+Vector<Data>& Vector<Data>::operator=(const Vector<Data>& vec) {
   Vector<Data> temp{vec};       // Costruttore di copia
   std::swap(temp, *this);       // Scambia contenuti
   return *this;
 }
 
 template <typename Data>
-inline Vector<Data> &Vector<Data>::operator=(Vector<Data> &&vec) noexcept {
+Vector<Data> &Vector<Data>::operator=(Vector<Data> &&vec) noexcept {
   std::swap(size, vec.size);
   std::swap(elements, vec.elements);
   return *this;
@@ -77,12 +77,12 @@ bool Vector<Data>::operator==(const Vector<Data> &vec) const noexcept {
 }
 
 template <typename Data>
-inline bool Vector<Data>::operator!=(const Vector<Data> &vec) const noexcept {
+bool Vector<Data>::operator!=(const Vector<Data> &vec) const noexcept {
   return !(*this == vec);
 }
 
 template <typename Data>
-inline const Data &Vector<Data>::operator[](unsigned long i) const {
+const Data &Vector<Data>::operator[](unsigned long i) const {
   if (i >= size) {
     throw std::out_of_range("This Vector has not that many elements");
   }
@@ -90,7 +90,7 @@ inline const Data &Vector<Data>::operator[](unsigned long i) const {
 }
 
 template <typename Data>
-inline Data &Vector<Data>::operator[](unsigned long i) {
+Data &Vector<Data>::operator[](unsigned long i) {
   if (i >= size) {
     throw std::out_of_range("This Vector has not that many elements");
   }

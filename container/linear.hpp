@@ -104,6 +104,8 @@ public:
   /* ************************************************************************ */
    
   using LinearContainer<Data>::operator[];
+  using LinearContainer<Data>::Front;
+  using LinearContainer<Data>::Back;
 
   // Specific member functions
   virtual Data& operator[](unsigned long) = 0; // (mutable version; throws std::out_of_range)
@@ -156,6 +158,9 @@ public:
   SortableLinearContainer& operator=(SortableLinearContainer&&) noexcept = delete;
 
   /* ************************************************************************ */
+  
+  using LinearContainer<Data>::operator==;
+  using LinearContainer<Data>::operator!=;
 
   // Comparison operators
 

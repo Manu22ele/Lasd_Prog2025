@@ -62,42 +62,42 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  inline Vector<Data>& operator=(const Vector<Data> &);
+  virtual Vector<Data>& operator=(const Vector<Data> &);
 
   // Move assignment
-  inline Vector<Data>& operator=(Vector<Data> &&) noexcept;
+  virtual Vector<Data>& operator=(Vector<Data> &&) noexcept;
 
   /* ************************************************************************ */
 
   // Comparison operators
   bool operator==(const Vector<Data> &) const noexcept;
-  inline bool operator!=(const Vector<Data> &) const noexcept;
+  virtual bool operator!=(const Vector<Data> &) const noexcept;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from MutableLinearContainer)
 
   // Override MutableLinearContainer member (must throw std::out_of_range when out of range)
-  inline Data& operator[](unsigned long index) override;              
+  virtual Data& operator[](unsigned long index) override;              
 
   // Override MutableLinearContainer member (must throw std::length_error when empty)
-  inline Data& Front() override;              
+  virtual Data& Front() override;              
 
   // Override MutableLinearContainer member (must throw std::length_error when empty)
-  inline Data& Back() override;              
+  virtual Data& Back() override;              
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
   // Override LinearContainer member (must throw std::out_of_range when out of range)
-  inline const Data &operator[](unsigned long) const override;
+  virtual const Data &operator[](unsigned long) const override;
 
   // Override LinearContainer member (must throw std::length_error when empty)
-  inline const Data &Front() const override;
+  virtual const Data &Front() const override;
 
   // Override LinearContainer member (must throw std::length_error when empty)
-  inline const Data &Back() const override;
+  virtual const Data &Back() const override;
 
   /* ************************************************************************ */
 
@@ -111,7 +111,7 @@ public:
   // Specific member function (inherited from ClearableContainer)
 
   // Override ClearableContainer member
-  inline void Clear() override;
+  virtual void Clear() override;
 
 protected:
 
@@ -145,23 +145,23 @@ public:
 
   // Specific constructors
   // A vector with a given initial dimension
-  inline SortableVector(unsigned long initSize) : Vector<Data>(initSize) {};
+  virtual SortableVector(unsigned long initSize) : Vector<Data>(initSize) {};
 
   // A vector obtained from a TraversableContainer
-  inline SortableVector(const TraversableContainer<Data> &container) : Vector<Data>(container) {};
+  virtual SortableVector(const TraversableContainer<Data> &container) : Vector<Data>(container) {};
 
   // A vector obtained from a MappableContainer
-  inline SortableVector(MappableContainer<Data> &&container) 
+  virtual SortableVector(MappableContainer<Data> &&container) 
      : Vector<Data>::Vector(std::move(container)) {};
 
   /* ************************************************************************ */
 
   // Copy constructor
-  inline SortableVector(const SortableVector<Data>& con)
+  virtual SortableVector(const SortableVector<Data>& con)
     : Vector<Data>(con) {};  
 
   // Move constructor
-  inline SortableVector(SortableVector<Data>&& con) noexcept
+  virtual SortableVector(SortableVector<Data>&& con) noexcept
     : Vector<Data>(std::move(con)) {};  
 
   /* ************************************************************************ */
@@ -172,10 +172,10 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  inline SortableVector<Data>& operator=(const SortableVector<Data>& con);
+  virtual SortableVector<Data>& operator=(const SortableVector<Data>& con);
 
   // Move assignment
-  inline SortableVector<Data>& operator=(SortableVector<Data>&& con) noexcept;
+  virtual SortableVector<Data>& operator=(SortableVector<Data>&& con) noexcept;
 
 protected:
 
