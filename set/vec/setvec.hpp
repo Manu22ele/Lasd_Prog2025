@@ -22,7 +22,7 @@ class SetVec : public virtual Set<Data>,
 private:
 
   // ...
-  size_t front_index = 0;  // Indice per il vettore circolare 
+  
 
 protected:
 
@@ -31,6 +31,7 @@ protected:
   size_t capacity = 0;
   Data* elements = nullptr;
   size_t front_index = 0;
+  int BinarySearch(const Data&) const;
   
 public:
 
@@ -88,31 +89,31 @@ public:
   virtual void RemoveMax() override;
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  const Data& Predecessor(const Data&) const;
+  virtual const Data& Predecessor(const Data&) const override;
   Data PredecessorNRemove(const Data&);
-  Data RemovePredecessor(const Data&);
+  virtual void RemovePredecessor(const Data&) override;
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  const Data& Successor(const Data&) const;
+  virtual const Data& Successor(const Data&) const override;
   Data SuccessorNRemove(const Data&);
-  Data RemoveSuccessor(const Data&); 
+  virtual void RemoveSuccessor(const Data&) override; 
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from DictionaryContainer)
 
-  virtual void Insert(const Data&) override;  // Override DictionaryContainer member (copy of the value)
-  virtual void Insert(Data&&) override;       // Override DictionaryContainer member (move of the value)
-  virtual void Remove(const Data&) override;  // Override DictionaryContainer member
+  virtual bool Insert(const Data&) override;  // Override DictionaryContainer member (copy of the value)
+  virtual bool Insert(Data&&) override;       // Override DictionaryContainer member (move of the value)
+  virtual bool Remove(const Data&) override;  // Override DictionaryContainer member
 
-  void Resize() override;  // Override ResizableContainer member (resizes the container)
+  virtual void Resize() override;  // Override ResizableContainer member (resizes the container)
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
-  Data& operator[](size_t) override;
-  const Data& operator[](size_t) const override;
+  Data& operator[](size_t);
+  const Data& operator[](size_t) const;
 
   /* ************************************************************************** */
 

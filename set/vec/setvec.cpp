@@ -197,7 +197,7 @@ void SetVec<Data>::RemoveMax() {
 
 // Predecessor (ritorna il predecessore dell'elemento, lancia eccezione se non trovato)
 template <typename Data>
-Data SetVec<Data>::Predecessor(const Data& elem) const {
+const Data& SetVec<Data>::Predecessor(const Data& elem) const {
   if (size == 0) {
     throw std::length_error("Set is empty.");
   }
@@ -231,7 +231,7 @@ Data SetVec<Data>::PredecessorNRemove(const Data& elem) {
 
 // RemovePredecessor (rimuove il predecessore dell'elemento)
 template <typename Data>
-Data SetVec<Data>::RemovePredecessor(const Data& elem) {
+void SetVec<Data>::RemovePredecessor(const Data& elem) {
   if (size == 0) {
     throw std::length_error("Set is empty.");
   }
@@ -249,7 +249,7 @@ Data SetVec<Data>::RemovePredecessor(const Data& elem) {
 
 // Successor (ritorna il successore dell'elemento, lancia eccezione se non trovato)
 template <typename Data>
-Data SetVec<Data>::Successor(const Data& elem) const {
+const Data& SetVec<Data>::Successor(const Data& elem) const {
   if (size == 0) {
     throw std::length_error("Set is empty.");
   }
@@ -283,7 +283,7 @@ Data SetVec<Data>::SuccessorNRemove(const Data& elem) {
 
 // RemoveSuccessor (rimuove il successore dell'elemento)
 template <typename Data>
-Data SetVec<Data>::RemoveSuccessor(const Data& elem) {
+void SetVec<Data>::RemoveSuccessor(const Data& elem) {
   if (size == 0) {
     throw std::length_error("Set is empty.");
   }
@@ -305,7 +305,7 @@ Data SetVec<Data>::RemoveSuccessor(const Data& elem) {
 // Membri specifici DictionaryContainer
 
 template <typename Data>
-void SetVec<Data>::Insert(const Data& elem) {
+bool SetVec<Data>::Insert(const Data& elem) {
   // Ricerca binaria per determinare se l'elemento esiste già nel set
   int index = BinarySearch(elem);
   
@@ -334,7 +334,7 @@ void SetVec<Data>::Insert(const Data& elem) {
 
 // Insert (inserisce un elemento nel set, evitando duplicati, versione di move)
 template <typename Data>
-void SetVec<Data>::Insert(Data&& elem) {
+bool SetVec<Data>::Insert(Data&& elem) {
   // Ricerca binaria per determinare se l'elemento esiste già nel set
   int index = BinarySearch(elem);
   
@@ -364,7 +364,7 @@ void SetVec<Data>::Insert(Data&& elem) {
 
 // Remove (rimuove un elemento dal set)
 template <typename Data>
-void SetVec<Data>::Remove(const Data& elem) {
+bool SetVec<Data>::Remove(const Data& elem) {
   // Ricerca binaria per determinare se l'elemento esiste nel set
   int index = BinarySearch(elem);
 
