@@ -416,47 +416,67 @@ void List<Data>::Clear() noexcept {
 // Internal Methods
 
 template <typename Data>
-void List<Data>::PreOrderMap(MapFun mapFunc, Node* node) const {
-  if (node) {
-    mapFunc(node->value);  // Applica la funzione mappante al nodo
-    PreOrderMap(mapFunc, node->next);  // Chiamata ricorsiva per il nodo successivo
+void List<Data>::Map(MapFun mapFunc) {
+  Node* current = head;
+  while (current != nullptr) {
+    mapFunc(current->value);
+    current = current->next;
   }
 }
 
-// Funzione per applicare una funzione di mappatura in post-order (ricorsiva)
+
 template <typename Data>
-void List<Data>::PostOrderMap(MapFun mapFunc, Node* node) const {
-  if (node) {
-    PostOrderMap(mapFunc, node->next);  // Chiamata ricorsiva per il nodo successivo
-    mapFunc(node->value);  // Applica la funzione mappante al nodo
+void List<Data>::PreOrderMap(MapFun mapFunc) {
+  Node* current = head;
+  while (current != nullptr) {
+    mapFunc(current->value);
+    current = current->next;
   }
 }
 
-// Funzione per applicare una funzione di traversamento in pre-order (ricorsiva)
+
 template <typename Data>
-void List<Data>::PreOrderTraverse(TraverseFun traverseFunc, Node* node) const {
-  if (node) {
-    traverseFunc(node->value);  // Applica la funzione di traversamento al nodo
-    PreOrderTraverse(traverseFunc, node->next);  // Chiamata ricorsiva per il nodo successivo
+void List<Data>::Traverse(TraverseFun traverseFunc) const {
+  Node* current = head;
+  while (current != nullptr) {
+    traverseFunc(current->value);
+    current = current->next;
   }
 }
 
-// Funzione per applicare una funzione di traversamento in post-order (ricorsiva)
+
 template <typename Data>
-void List<Data>::PostOrderTraverse(TraverseFun traverseFunc, Node* node) const {
-  if (node) {
-    PostOrderTraverse(traverseFunc, node->next);  // Chiamata ricorsiva per il nodo successivo
-    traverseFunc(node->value);  // Applica la funzione di traversamento al nodo
+void List<Data>::PreOrderTraverse(TraverseFun traverseFunc) const {
+  Node* current = head;
+  while (current != nullptr) {
+    traverseFunc(current->value);
+    current = current->next;
   }
 }
 
-// Funzione di supporto per cancellare i nodi ricorsivamente
+
 template <typename Data>
-void List<Data>::clear(Node* node) noexcept {
-  if (node) {
-    clear(node->next);  // Chiamata ricorsiva per il prossimo nodo
-    delete node;        // Dealloca il nodo corrente
+void List<Data>::PostOrderTraverse(TraverseFun traverseFunc) const {
+  std::vector<const Data*> temp;
+  Node* current = head;
+  while (current != nullptr) {
+    temp.push_back(&(current->value));
+    current = current->next;
   }
+  for (auto it = temp.rbegin(); it != temp.rend(); ++it) {
+    traverseFunc(**it);
+  }
+}
+
+template <typename Data>
+void List<Data>::Clear() noexcept {
+  while (head != nullptr) {
+    Node* temp = head;
+    head = head->next;
+    delete temp;
+  }
+  tail = nullptr;
+  size = 0;
 }
 
 /* **************************************************************************
