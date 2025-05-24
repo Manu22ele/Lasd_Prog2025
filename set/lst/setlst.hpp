@@ -28,6 +28,8 @@ protected:
 
   // using Container::???;
   using Container::size;
+  using typename List<Data>::Node;
+  using List<Data>::head;
 
   // ...
 
