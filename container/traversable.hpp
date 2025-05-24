@@ -56,10 +56,10 @@ public:
   virtual void Traverse(TraverseFun) const = 0;
 
   template <typename Accumulator>
-  using FoldFun = std::function<Accumulator(const Data &, Accumulator &)>;
+  using FoldFun = std::function<Accumulator(const Data &, const Accumulator &)>;
 
   template <typename Accumulator>
-  Accumulator Fold(FoldFun<Accumulator>, const Accumulator&) const;
+  Accumulator Fold(FoldFun<Accumulator>, Accumulator&) const;
 
   /* ************************************************************************ */
 
