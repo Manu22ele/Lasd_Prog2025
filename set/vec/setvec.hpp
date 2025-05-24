@@ -28,7 +28,10 @@ protected:
 
   // using Container::???;
   using Container::size;
-
+  size_t capacity = 0;
+  Data* elements = nullptr;
+  size_t front_index = 0;
+  
 public:
 
   // Default constructor
@@ -59,67 +62,69 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  inline SetVec<Data>& operator=(const SetVec<Data>& other);
+  SetVec<Data>& operator=(const SetVec<Data>& other);
 
   // Move assignment
-  inline SetVec<Data>& operator=(SetVec<Data>&& other) noexcept;
+  SetVec<Data>& operator=(SetVec<Data>&& other) noexcept;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  inline bool operator==(const SetVec<Data>& other) const noexcept;
-  inline bool operator!=(const SetVec<Data>& other) const noexcept;
+  virtual bool operator==(const SetVec<Data>& other) const noexcept;
+  virtual bool operator!=(const SetVec<Data>& other) const noexcept;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from OrderedDictionaryContainer)
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  inline Data Min() const;
-  inline Data MinRemove();
-  inline Data RemoveMin();
+  virtual const Data& Min() const override;
+  Data MinRemove();
+  virtual void RemoveMin() override;
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  inline Data Max() const;
-  inline Data MaxRemove();
-  inline Data RemoveMax();
+  virtual const Data& Max() const override;
+  Data MaxRemove();
+  virtual void RemoveMax() override;
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  inline Data Predecessor(const Data&) const;
-  inline Data PredecessorNRemove(const Data&);
-  inline Data RemovePredecessor(const Data&);
+  const Data& Predecessor(const Data&) const;
+  Data PredecessorNRemove(const Data&);
+  Data RemovePredecessor(const Data&);
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  inline Data Successor(const Data&) const;
-  inline Data SuccessorNRemove(const Data&);
-  inline Data RemoveSuccessor(const Data&); 
+  const Data& Successor(const Data&) const;
+  Data SuccessorNRemove(const Data&);
+  Data RemoveSuccessor(const Data&); 
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from DictionaryContainer)
 
-  inline void Insert(const Data&);  // Override DictionaryContainer member (copy of the value)
-  inline void Insert(Data&&);       // Override DictionaryContainer member (move of the value)
-  inline void Remove(const Data&);  // Override DictionaryContainer member
+  virtual void Insert(const Data&) override;  // Override DictionaryContainer member (copy of the value)
+  virtual void Insert(Data&&) override;       // Override DictionaryContainer member (move of the value)
+  virtual void Remove(const Data&) override;  // Override DictionaryContainer member
+
+  void Resize() override;  // Override ResizableContainer member (resizes the container)
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
-  inline Data& operator[](size_t) override;
-  inline const Data& operator[](size_t) const override;
+  Data& operator[](size_t) override;
+  const Data& operator[](size_t) const override;
 
   /* ************************************************************************** */
 
   // Specific member function (inherited from TestableContainer)
 
-  inline bool Exists(const Data&) const noexcept override;
+  virtual bool Exists(const Data&) const noexcept override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from ClearableContainer)
 
-  inline void Clear() noexcept override;
+  virtual void Clear() noexcept override;
 
 protected:
 
