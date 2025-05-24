@@ -311,7 +311,7 @@ bool SetVec<Data>::Insert(const Data& elem) {
   
   // Se l'elemento esiste già, non fare nulla
   if (index >= 0) {
-    return;
+    return false;
   }
 
   // Se l'elemento non esiste, dobbiamo inserirlo nell'ordine corretto
@@ -330,6 +330,8 @@ bool SetVec<Data>::Insert(const Data& elem) {
   // Inseriamo l'elemento
   elements[index] = elem;
   ++size; // Aumentiamo la dimensione del set
+
+  return true;
 }
 
 // Insert (inserisce un elemento nel set, evitando duplicati, versione di move)
@@ -340,7 +342,7 @@ bool SetVec<Data>::Insert(Data&& elem) {
   
   // Se l'elemento esiste già, non fare nulla
   if (index >= 0) {
-    return;
+    return false;
   }
 
   // Se l'elemento non esiste, dobbiamo inserirlo nell'ordine corretto
@@ -359,6 +361,8 @@ bool SetVec<Data>::Insert(Data&& elem) {
   // Inseriamo l'elemento
   elements[index] = std::move(elem);
   ++size; // Aumentiamo la dimensione del set
+
+  return true;
 }
 
 
@@ -371,6 +375,7 @@ bool SetVec<Data>::Remove(const Data& elem) {
   // Se l'elemento non esiste, lanciamo un'eccezione
   if (index < 0) {
     throw std::length_error("Element not found.");
+    return false; // Elemento non trovato
   }
 
   // Spostiamo gli elementi successivi per colmare il vuoto
@@ -379,6 +384,8 @@ bool SetVec<Data>::Remove(const Data& elem) {
   }
 
   --size; // Decrementiamo la dimensione del set
+
+  return true;
 }
 
 // BinarySearch (ricerca binaria per trovare l'indice dell'elemento nel vettore)
@@ -403,9 +410,10 @@ int SetVec<Data>::BinarySearch(const Data& elem) const {
 
 // Resize (raddoppia la capacità del vettore quando è pieno)
 template <typename Data>
-void SetVec<Data>::Resize() {
-  capacity *= 2;
-  Data* new_elements = new Data[capacity];
+void SetVec<Data>::Resize(unsigned long newCapacity) {
+  if(newCapacity <= capacity) return; // Se la nuova capacità è più piccola o uguale, non facciamo nulla
+
+  Data* new_elements = new Data[newCapacity];
 
   // Copia gli elementi nel nuovo array
   for (size_t i = 0; i < size; ++i) {
@@ -414,8 +422,8 @@ void SetVec<Data>::Resize() {
 
   delete[] elements;
   elements = new_elements;
+  capacity = newCapacity;
 }
-
 
 /* ************************************************************************** */
 

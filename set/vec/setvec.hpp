@@ -106,7 +106,7 @@ public:
   virtual bool Insert(Data&&) override;       // Override DictionaryContainer member (move of the value)
   virtual bool Remove(const Data&) override;  // Override DictionaryContainer member
 
-  virtual void Resize() override;  // Override ResizableContainer member (resizes the container)
+  void Resize(unsigned long) override;  // Override ResizableContainer member (resizes the container)
 
   /* ************************************************************************ */
 
