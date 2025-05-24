@@ -152,7 +152,7 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  SortableLinearContainer& operator=(const SortableLinearContainer&) = delete;
+  SortableLinearContainer& operator=(const SortableLinearContainer&) noexcept = delete;
 
   // Move assignment
   SortableLinearContainer& operator=(SortableLinearContainer&&) noexcept = delete;

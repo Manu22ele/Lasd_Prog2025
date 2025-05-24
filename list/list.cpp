@@ -172,6 +172,17 @@ bool List<Data>::operator!=(const List<Data> &l) const noexcept {
   return !(*this == l);
 }
 
+template <typename Data>
+bool List<Data>::operator==(const LinearContainer<Data>& con) const noexcept {
+  const List<Data>* listPtr = dynamic_cast<const List<Data>*>(&con);
+  return listPtr && (*this == *listPtr);
+}
+
+template <typename Data>
+bool List<Data>::operator!=(const LinearContainer<Data>& con) const noexcept {
+  return !(*this == con);
+}
+
 // Specific Operators
 
 template <typename Data>

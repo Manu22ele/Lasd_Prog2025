@@ -59,7 +59,7 @@ protected:
     /* ********************************************************************** */
 
     // Comparison operators
-    bool operator==(const Node &) const noexcept;
+    bool operator==(const Node &) const noexcept ;
 
     bool operator!=(const Node &) const noexcept;
 
@@ -109,9 +109,16 @@ public:
 
   /* ************************************************************************ */
 
+  using LinearContainer<Data>::operator==;
+  using LinearContainer<Data>::operator!=;
+
   // Comparison operators
   virtual bool operator==(const List &) const noexcept;
   virtual bool operator!=(const List &) const noexcept;
+
+  // Overriding LinearContainer comparison operators to avoid hiding
+  virtual bool operator==(const LinearContainer<Data>&) const noexcept override;
+  virtual bool operator!=(const LinearContainer<Data>&) const noexcept override;
 
   /* ************************************************************************ */
 

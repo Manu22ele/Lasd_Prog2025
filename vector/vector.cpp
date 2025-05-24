@@ -191,7 +191,7 @@ void Vector<Data>::Map(typename MappableContainer<Data>::MapFun fun) {
 template <typename Data>
 void SortableVector<Data>::Sort() noexcept {
   // Chiamiamo il metodo di ordinamento fornito da Vector,
-  insertionSort(0, this->size - 1);
+  this->insertionSort(0, this->size - 1);
 }
 
 template class SortableVector<int>;    // Aggiungi per i tipi che usi
