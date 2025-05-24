@@ -164,21 +164,21 @@ public:
   using typename MappableContainer<Data>::MapFun;
 
   // Override MappableContainer member
-  virtual void Map(MapFun) override;
+  void Map(MapFun) override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderMappableContainer)
 
   // Override PreOrderMappableContainer member
-  virtual void PreOrderMap(MapFun) override;
+  void PreOrderMap(MapFun) override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderMappableContainer)
 
   // Override PostOrderMappableContainer member
-  virtual void PostOrderMap(MapFun) override;
+  void PostOrderMap(MapFun) override;
 
   /* ************************************************************************ */
 
@@ -188,40 +188,31 @@ public:
   using typename TraversableContainer<Data>::TraverseFun;
 
   // Override TraversableContainer member
-  virtual void Traverse(TraverseFun) const override;
+  void Traverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderTraversableContainer)
 
   // Override PreOrderTraversableContainer member
-  virtual void PreOrderTraverse(TraverseFun) const override;
+  void PreOrderTraverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderTraversableContainer)
 
   // Override PostOrderTraversableContainer member
-  virtual void PostOrderTraverse(TraverseFun) const override;
+  void PostOrderTraverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from ClearableContainer)
 
   // Override ClearableContainer member
-  virtual void Clear() noexcept override;
+  void Clear() noexcept override;
 
 protected:
 
-    void PreOrderMap(MapFun, Node*) const;
-
-    void PostOrderMap(MapFun, Node*) const;
-
-    void PreOrderTraverse(TraverseFun, Node*) const;
-
-    void PostOrderTraverse(TraverseFun, Node*) const;
-
-    virtual void clear(Node*) noexcept;
 
 };
 

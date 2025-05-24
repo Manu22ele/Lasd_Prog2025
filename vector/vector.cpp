@@ -151,6 +151,45 @@ template <typename Data> inline Data &Vector<Data>::Back() {
   throw std::length_error("The Vector is empty");
 }
 
+// Metodi per TraversableContainer
+template <typename Data>
+void Vector<Data>::Traverse(typename TraversableContainer<Data>::TraverseFun fun) const {
+  for (unsigned long i = 0; i < size; ++i) {
+    fun(elements[i]);
+  }
+}
+
+// PreOrderTraverse: in un vettore è lo stesso di Traverse
+template <typename Data>
+void Vector<Data>::PreOrderTraverse(typename TraversableContainer<Data>::TraverseFun fun) const {
+  Traverse(fun);  // Per un vettore, è identico
+}
+
+// PostOrderTraverse: in un vettore è lo stesso di Traverse
+template <typename Data>
+void Vector<Data>::PostOrderTraverse(typename TraversableContainer<Data>::TraverseFun fun) const {
+  Traverse(fun);  // Per un vettore, è identico
+}
+
+// Metodi per MappableContainer
+template <typename Data>
+void Vector<Data>::Map(typename MappableContainer<Data>::MapFun fun) {
+  for (unsigned long i = 0; i < size; ++i) {
+    fun(elements[i]);
+  }
+}
+
+// PreOrderMap: in un vettore è lo stesso di Map
+template <typename Data>
+void Vector<Data>::PreOrderMap(typename MappableContainer<Data>::MapFun fun) {
+  Map(fun);  // Per un vettore, è identico
+}
+
+// PostOrderMap: in un vettore è lo stesso di Map
+template <typename Data>
+void Vector<Data>::PostOrderMap(typename MappableContainer<Data>::MapFun fun) {
+  Map(fun);  // Per un vettore, è identico
+}
 
 /* ************************************************************************** */
 
@@ -172,19 +211,6 @@ SortableVector<Data>& SortableVector<Data>::operator=(SortableVector<Data>&& con
   return *this;
 }
 
-template <typename Data>
-void Vector<Data>::Traverse(typename TraversableContainer<Data>::TraverseFun fun) const {
-  for (unsigned long i = 0; i < size; ++i) {
-    fun(elements[i]);
-  }
-}
-
-template <typename Data>
-void Vector<Data>::Map(typename MappableContainer<Data>::MapFun fun) {
-  for (unsigned long i = 0; i < size; ++i) {
-    fun(elements[i]);
-  }
-}
 
 // SortableVector
 

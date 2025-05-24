@@ -102,11 +102,23 @@ public:
   virtual const Data &Back() const override;
 
   // Override TraversableContainer member
-  virtual void Traverse(typename TraversableContainer<Data>::TraverseFun) const override;
+  using typename TraversableContainer<Data>::TraverseFun;
 
-  // Override MappableContainer member
-  virtual void Map(typename MappableContainer<Data>::MapFun) override;
+  void Traverse(TraverseFun) const override;
 
+  void PreOrderTraverse(TraverseFun) const override;
+
+  void PostOrderTraverse(TraverseFun) const override;
+
+  // using typename MappableContainer<Data>::MapFun;
+  using typename MappableContainer<Data>::MapFun;
+  
+  void Map(MapFun) override;
+
+  void PreOrderMap(MapFun) override;
+
+  void PostOrderMap(MapFun) override;
+  
   /* ************************************************************************ */
 
   // Specific member function (inherited from ResizableContainer)
