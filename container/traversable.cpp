@@ -11,7 +11,7 @@ using FoldFun = typename TraversableContainer<Data>::template FoldFun<Accumulato
 
 template <typename Data>
 template <typename Accumulator>
-Accumulator TraversableContainer<Data>::Fold(FoldFun<Accumulator> func,  Accumulator& base) const {
+Accumulator TraversableContainer<Data>::Fold(FoldFun<Accumulator> func, const Accumulator& base) const {
   Traverse([&base, func](const Data &currData) { base = func(currData, base); });
   return base;
 };
@@ -39,7 +39,7 @@ void PreOrderTraversableContainer<Data>::Traverse(TraverseFun func) const {
 
 template <typename Data>
 template <typename Accumulator>
-Accumulator PreOrderTraversableContainer<Data>::PreOrderFold(FoldFun<Accumulator> func, Accumulator& base) const {
+Accumulator PreOrderTraversableContainer<Data>::PreOrderFold(FoldFun<Accumulator> func, const Accumulator& base) const {
   PreOrderTraverse([&base, func](const Data &currData) { base = func(currData, base); });
   return base;
 };
@@ -58,7 +58,7 @@ void PostOrderTraversableContainer<Data>::Traverse(TraverseFun func) const {
 
 template <typename Data>
 template <typename Accumulator>
-Accumulator PostOrderTraversableContainer<Data>::PostOrderFold(FoldFun<Accumulator> func, Accumulator& base) const {
+Accumulator PostOrderTraversableContainer<Data>::PostOrderFold(FoldFun<Accumulator> func, const Accumulator& base) const {
   PostOrderTraverse([&base, &func](const Data &currData) { base = func(currData, base); });
   return base;
 };

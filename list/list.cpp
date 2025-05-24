@@ -103,8 +103,9 @@ List<Data>::~List() noexcept {
 // Operators
 
 // Copy assignment
+
 template <typename Data>
-List<Data> &List<Data>::operator=(const List<Data> &l) {
+List<Data>& List<Data>::operator=(const List<Data>& l) {
 
   if (!l.size) {
     Clear();
@@ -117,25 +118,32 @@ List<Data> &List<Data>::operator=(const List<Data> &l) {
     return *this;
   }
 
-  Node *wl{l.head};
-  tail = head;
-
-  tail->value = wl->value;
-
-  while (tail->next && wl->next) {
-    tail = tail->next;
-    wl = wl->next;
-
-    tail->value = wl->value;
-  }
-
-  if (tail->next) {
-    clear(tail->next);
-    tail->next = nullptr;
-  } else
-    for (wl = wl->next; wl; wl = wl->next) {
+  // Se la lista di destinazione è più grande della sorgente,
+  // cancella tutto e ricrea da zero:
+  if (size > l.size) {
+    Clear();
+    for (Node* wl = l.head; wl != nullptr; wl = wl->next) {
       InsertAtBack(wl->value);
     }
+    return *this;
+  }
+
+  // Copia i valori dei nodi esistenti (in numero minimo)
+  Node* wl = l.head;
+  Node* tl = head;
+
+  while (wl && tl) {
+    tl->value = wl->value;
+    wl = wl->next;
+    tl = tl->next;
+  }
+
+  // Se la lista sorgente è più lunga, aggiungi i nodi restanti
+  while (wl) {
+    InsertAtBack(wl->value);
+    wl = wl->next;
+  }
+
   size = l.size;
   return *this;
 }
@@ -375,15 +383,6 @@ void List<Data>::Map(MapFun mapFunc) {
   }
 }
 
-template <typename Data>
-void List<Data>::PreOrderMap(MapFun mapFunc) {
-  Map(mapFunc);  // Pre-order e post-order sono uguali in una lista
-}
-
-template <typename Data>
-void List<Data>::PostOrderMap(MapFun mapFunc) {
-  Map(mapFunc);  // Pre-order e post-order sono uguali in una lista
-}
 
 template <typename Data>
 void List<Data>::Traverse(TraverseFun traverseFunc) const {
@@ -394,35 +393,9 @@ void List<Data>::Traverse(TraverseFun traverseFunc) const {
   }
 }
 
-template <typename Data>
-void List<Data>::PreOrderTraverse(TraverseFun traverseFunc) const {
-  Traverse(traverseFunc);  // Pre-order in una lista è semplicemente scorrere la lista
-}
-
-template <typename Data>
-void List<Data>::PostOrderTraverse(TraverseFun traverseFunc) const {
-  Traverse(traverseFunc);  // Post-order in una lista è semplicemente scorrere la lista
-}
-
-
-template <typename Data>
-void List<Data>::Clear() noexcept {
-  clear(head);           // Dealloca i nodi
-  head = tail = nullptr; // Azzera i puntatori
-  size = 0;              // Azzera la dimensione
-}
 
 
 // Internal Methods
-
-template <typename Data>
-void List<Data>::Map(MapFun mapFunc) {
-  Node* current = head;
-  while (current != nullptr) {
-    mapFunc(current->value);
-    current = current->next;
-  }
-}
 
 
 template <typename Data>
@@ -436,14 +409,18 @@ void List<Data>::PreOrderMap(MapFun mapFunc) {
 
 
 template <typename Data>
-void List<Data>::Traverse(TraverseFun traverseFunc) const {
+void List<Data>::PostOrderMap(MapFun mapFunc) {
+  // Puoi usare uno stack o ricorsione con una lista ausiliaria
+  std::vector<Data*> temp;
   Node* current = head;
   while (current != nullptr) {
-    traverseFunc(current->value);
+    temp.push_back(&(current->value));
     current = current->next;
   }
+  for (auto it = temp.rbegin(); it != temp.rend(); ++it) {
+    mapFunc(**it);
+  }
 }
-
 
 template <typename Data>
 void List<Data>::PreOrderTraverse(TraverseFun traverseFunc) const {
