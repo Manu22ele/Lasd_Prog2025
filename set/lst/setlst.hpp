@@ -61,69 +61,69 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  inline SetLst<Data>& operator=(const SetLst<Data>&);
+  virtual SetLst<Data>& operator=(const SetLst<Data>&);
 
   // Move assignment
-  inline SetLst<Data>& operator=(SetLst<Data>&&) noexcept;
+  virtual SetLst<Data>& operator=(SetLst<Data>&&) noexcept;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  inline bool operator==(const SetLst<Data>&) const noexcept;
-  inline bool operator!=(const SetLst<Data>&) const noexcept;
+  virtual bool operator==(const SetLst<Data>&) const noexcept;
+  virtual bool operator!=(const SetLst<Data>&) const noexcept;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from OrderedDictionaryContainer)
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  inline Data Min() const;
-  inline Data MinRemove() const;
-  inline Data RemoveMin() const;
+  virtual Data Min() const;
+  virtual Data MinRemove() const;
+  virtual Data RemoveMin() const;
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  inline Data Max() const; 
-  inline Data MaxRemove() const;
-  inline Data RemoveMax() const;
+  virtual Data Max() const; 
+  virtual Data MaxRemove() const;
+  virtual Data RemoveMax() const;
   
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  inline Data Predecessor(const Data&) const;
-  inline Data PredecessorNRemove(const Data&);
-  inline Data RemovePredecessor(const Data&);
+  virtual Data Predecessor(const Data&) const;
+  virtual Data PredecessorNRemove(const Data&);
+  virtual Data RemovePredecessor(const Data&);
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  inline Data Successor(const Data&) const; 
-  inline Data SuccessorNRemove(const Data&);
-  inline Data RemoveSuccessor(const Data&);
+  virtual Data Successor(const Data&) const; 
+  virtual Data SuccessorNRemove(const Data&);
+  virtual Data RemoveSuccessor(const Data&);
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from DictionaryContainer)
 
-  inline void Insert(const Data&);       // Insert by copy
-  inline void Insert(Data&&);             // Insert by move
-  inline void Remove(const Data&);        // Remove an element
+  virtual void Insert(const Data&);       // Insert by copy
+  virtual void Insert(Data&&);             // Insert by move
+  virtual void Remove(const Data&);        // Remove an element
 
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
-  inline Data& operator[](size_t index);              // Access an element by index (throws std::out_of_range if out of range)
-  inline const Data& operator[](size_t index) const;   // Const access to an element by index (throws std::out_of_range if out of range)
+  virtual Data& operator[](size_t index);              // Access an element by index (throws std::out_of_range if out of range)
+  virtual const Data& operator[](size_t index) const;   // Const access to an element by index (throws std::out_of_range if out of range)
 
 
   /* ************************************************************************** */
 
   // Specific member function (inherited from TestableContainer)
 
-  inline bool Exists(const Data&) const noexcept;
+  virtual bool Exists(const Data&) const noexcept;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from ClearableContainer)
 
-  inline void Clear() noexcept override;
+  virtual void Clear() noexcept override;
 
 protected:
 

@@ -37,7 +37,7 @@ SetLst<Data>::SetLst(SetLst<Data>&& other) noexcept : List<Data>(std::move(other
 
 // Assegnamento di copia
 template <typename Data>
-inline SetLst<Data>& SetLst<Data>::operator=(const SetLst<Data>& other) {
+SetLst<Data>& SetLst<Data>::operator=(const SetLst<Data>& other) {
   if (this != &other) {
     List<Data>::operator=(other);
   }
@@ -46,7 +46,7 @@ inline SetLst<Data>& SetLst<Data>::operator=(const SetLst<Data>& other) {
 
 // Assegnamendo di move
 template <typename Data>
-inline SetLst<Data>& SetLst<Data>::operator=(SetLst<Data>&& other) noexcept {
+SetLst<Data>& SetLst<Data>::operator=(SetLst<Data>&& other) noexcept {
     List<Data>::operator=(std::move(other));
     return *this;
 }
@@ -56,12 +56,12 @@ inline SetLst<Data>& SetLst<Data>::operator=(SetLst<Data>&& other) noexcept {
 // Operatori di confronto
 
 template <typename Data>
-inline bool SetLst<Data>::operator==(const SetLst<Data>& other) const noexcept {
+bool SetLst<Data>::operator==(const SetLst<Data>& other) const noexcept {
     return List<Data>::operator==(other);
 }
 
 template <typename Data>
-inline bool SetLst<Data>::operator!=(const SetLst<Data>& other) const noexcept {
+bool SetLst<Data>::operator!=(const SetLst<Data>& other) const noexcept {
     return !(*this == other);
 }
 
@@ -72,7 +72,7 @@ inline bool SetLst<Data>::operator!=(const SetLst<Data>& other) const noexcept {
 
 // Min
 template <typename Data>
-inline Data SetLst<Data>::Min() const {
+Data SetLst<Data>::Min() const {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -92,7 +92,7 @@ inline Data SetLst<Data>::Min() const {
 
 // MinRemove
 template <typename Data>
-inline Data SetLst<Data>::MinRemove() const {
+Data SetLst<Data>::MinRemove() const {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -123,7 +123,7 @@ inline Data SetLst<Data>::MinRemove() const {
 
 // RemoveMin
 template <typename Data>
-inline Data SetLst<Data>::RemoveMin() const {
+Data SetLst<Data>::RemoveMin() const {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -154,7 +154,7 @@ inline Data SetLst<Data>::RemoveMin() const {
 
 // Max
 template <typename Data>
-inline Data SetLst<Data>::Max() const {
+Data SetLst<Data>::Max() const {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -174,7 +174,7 @@ inline Data SetLst<Data>::Max() const {
 
 // MaxRemove
 template <typename Data>
-inline Data SetLst<Data>::MaxRemove() const {
+Data SetLst<Data>::MaxRemove() const {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -205,7 +205,7 @@ inline Data SetLst<Data>::MaxRemove() const {
 
 // RemoveMax
 template <typename Data>
-inline Data SetLst<Data>::RemoveMax() const {
+Data SetLst<Data>::RemoveMax() const {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -236,7 +236,7 @@ inline Data SetLst<Data>::RemoveMax() const {
 
 // Predecessor
 template <typename Data>
-inline Data SetLst<Data>::Predecessor(const Data& value) const {
+Data SetLst<Data>::Predecessor(const Data& value) const {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -261,7 +261,7 @@ inline Data SetLst<Data>::Predecessor(const Data& value) const {
 
 // PredecessorNRemove
 template <typename Data>
-inline Data SetLst<Data>::PredecessorNRemove(const Data& value) {
+Data SetLst<Data>::PredecessorNRemove(const Data& value) {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -293,7 +293,7 @@ inline Data SetLst<Data>::PredecessorNRemove(const Data& value) {
 
 // RemovePredecessor
 template <typename Data>
-inline Data SetLst<Data>::RemovePredecessor(const Data& value) {
+Data SetLst<Data>::RemovePredecessor(const Data& value) {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -325,7 +325,7 @@ inline Data SetLst<Data>::RemovePredecessor(const Data& value) {
 
 // Successor
 template <typename Data>
-inline Data SetLst<Data>::Successor(const Data& value) const {
+Data SetLst<Data>::Successor(const Data& value) const {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -348,7 +348,7 @@ inline Data SetLst<Data>::Successor(const Data& value) const {
 
 // SuccessorNRemove
 template <typename Data>
-inline Data SetLst<Data>::SuccessorNRemove(const Data& value) {
+Data SetLst<Data>::SuccessorNRemove(const Data& value) {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -376,7 +376,7 @@ inline Data SetLst<Data>::SuccessorNRemove(const Data& value) {
 
 // RemoveSuccessor
 template <typename Data>
-inline Data SetLst<Data>::RemoveSuccessor(const Data& value) {
+Data SetLst<Data>::RemoveSuccessor(const Data& value) {
   if (size == 0) {
     throw std::length_error("Container is empty");
   }
@@ -407,7 +407,7 @@ inline Data SetLst<Data>::RemoveSuccessor(const Data& value) {
 // Membri specifici DictionaryContainer
 
 template <typename Data>
-inline void SetLst<Data>::Insert(const Data& value) {
+void SetLst<Data>::Insert(const Data& value) {
   if (Exists(value)) return;
 
   Node* newNode = new Node(value);
@@ -429,7 +429,7 @@ inline void SetLst<Data>::Insert(const Data& value) {
 
 
 template <typename Data>
-inline void SetLst<Data>::Insert(Data&& value) {
+void SetLst<Data>::Insert(Data&& value) {
   if (Exists(value)) return;
 
   Node* newNode = new Node(std::move(value));
@@ -450,7 +450,7 @@ inline void SetLst<Data>::Insert(Data&& value) {
 }
 
 template <typename Data>
-inline void SetLst<Data>::Remove(const Data& value) {
+void SetLst<Data>::Remove(const Data& value) {
   // Controlla se l'elemento esiste prima di rimuoverlo
   if (Exists(value)) {
     // Rimuovi l'elemento dalla lista
@@ -475,39 +475,12 @@ inline void SetLst<Data>::Remove(const Data& value) {
   }
 }
 
-template <typename Data>
-inline Data& SetLst<Data>::operator[](size_t index) {
-  // Lanciamo un'eccezione se l'indice è fuori range
-  if (index >= size) {
-    throw std::out_of_range("Index out of range");
-  }
-  // Scorriamo la lista per trovare l'elemento all'indice richiesto
-  Node* temp = head;
-  for (size_t i = 0; i < index; ++i) {
-    temp = temp->next;
-  }
-  return temp->value;
-}
-
-template <typename Data>
-inline const Data& SetLst<Data>::operator[](size_t index) const {
-  // Lanciamo un'eccezione se l'indice è fuori range
-  if (index >= size) {
-    throw std::out_of_range("Index out of range");
-  }
-  // Scorriamo la lista per trovare l'elemento all'indice richiesto
-  Node* temp = head;
-  for (size_t i = 0; i < index; ++i) {
-    temp = temp->next;
-  }
-  return temp->value;
-}
 
 /* ************************************************************************** */
 
 // Membri specifici LinearContainer
 template <typename Data>
-inline Data& SetLst<Data>::operator[](size_t index) {
+Data& SetLst<Data>::operator[](size_t index) {
     if(index >= size) {
         throw std::out_of_range("Index out of range");
     }
@@ -515,7 +488,7 @@ inline Data& SetLst<Data>::operator[](size_t index) {
 }
 
 template <typename Data>
-inline const Data& SetLst<Data>::operator[](size_t index) const {
+const Data& SetLst<Data>::operator[](size_t index) const {
     if(index >= size) {
         throw std::out_of_range("Index out of range");
     }
@@ -526,7 +499,7 @@ inline const Data& SetLst<Data>::operator[](size_t index) const {
 
 // Membri specific TestableContainer
 template <typename Data>
-inline bool SetLst<Data>::Exists(const Data& value) const noexcept {
+bool SetLst<Data>::Exists(const Data& value) const noexcept {
   if (size == 0) return false;
 
   size_t left = 0;
@@ -554,7 +527,7 @@ inline bool SetLst<Data>::Exists(const Data& value) const noexcept {
 
 // Membri specifici ClearableContainer
 template <typename Data>
-inline void SetLst<Data>::Clear() noexcept {
+void SetLst<Data>::Clear() noexcept {
     List<Data>::Clear();
 }
 

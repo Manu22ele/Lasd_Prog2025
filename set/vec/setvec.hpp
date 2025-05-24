@@ -15,7 +15,7 @@ namespace lasd {
 
 template <typename Data>
 class SetVec : public virtual Set<Data>,
-               public virtual ResizableContainer<Data> {
+               public virtual ResizableContainer {
   // Must extend Set<Data>,
   //             ResizableContainer
 
