@@ -188,7 +188,7 @@ public:
   // Move assignment override che chiama l’operatore base per chiarezza e per evitare warning
   SortableVector<Data> &operator=(SortableVector<Data> &&con) noexcept;
 
-  void sort() noexcept override;
+  void Sort() noexcept override;
 
 protected:
 

@@ -49,24 +49,24 @@ public:
   // Specific member functions
   virtual const Data& operator[](unsigned long) const = 0; // (non-mutable version; throws std::out_of_range)
 
-  virtual const Data& Front() const = 0; // throws std::length_error if empty
-  virtual const Data& Back() const = 0;  // throws std::length_error if empty
+  virtual const Data& Front() const; // throws std::length_error if empty
+  virtual const Data& Back() const;  // throws std::length_error if empty
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from TraversableContainer)
   using typename TraversableContainer<Data>::TraverseFun;
-  virtual void Traverse(TraverseFun) const override = 0;
+  virtual void Traverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderTraversableContainer)
-  virtual void PreOrderTraverse(TraverseFun) const override = 0;
+  virtual void PreOrderTraverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderTraversableContainer)
-  virtual void PostOrderTraverse(TraverseFun) const override = 0;
+  virtual void PostOrderTraverse(TraverseFun) const override;
 
 };
 
@@ -109,8 +109,8 @@ public:
 
   // Specific member functions
   virtual Data& operator[](unsigned long) = 0; // (mutable version; throws std::out_of_range)
-  virtual Data& Front() = 0;                   // throws std::length_error if empty
-  virtual Data& Back() = 0;                    // throws std::length_error if empty
+  virtual Data& Front();                   // throws std::length_error if empty
+  virtual Data& Back();                    // throws std::length_error if empty
 
   /* ************************************************************************ */
 
