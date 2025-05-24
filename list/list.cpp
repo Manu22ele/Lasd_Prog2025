@@ -52,7 +52,7 @@ bool List<Data>::Node::operator!=(const Node &n) const noexcept {
 // Copy constructor from Different DataStructures
 template <typename Data>   
 List<Data>::List(const TraversableContainer<Data> &con) {
-  con.Travers([this](const Data &currData) {
+  con.Traverse([this](const Data &currData) {
     InsertAtBack(currData);
   });
 }
@@ -61,7 +61,7 @@ List<Data>::List(const TraversableContainer<Data> &con) {
 // Move constructor from Different DataStructures
 template <typename Data>   
 List<Data>::List(MappableContainer<Data> &&con) {
-  con.Map([this](Data &&currData) {
+  con.Map([this](Data &currData) {
     InsertAtBack(std::move(currData));
   });
 }
