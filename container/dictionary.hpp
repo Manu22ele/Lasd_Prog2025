@@ -13,7 +13,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class DictionaryContainer : public virtual TestableContainer<Data> {
+class DictionaryContainer : public virtual TestableContainer<Data>{
   // Must extend TestableContainer<Data>
 
 private:
@@ -49,15 +49,15 @@ public:
   virtual bool Insert(Data&&) = 0;      // Move of the value
   virtual bool Remove(const Data&) = 0;
 
-  virtual bool InsertAll(const TraversableContainer<Data>&) = 0;   // Copy from TraversableContainer
-  virtual bool InsertAll(MappableContainer<Data>&&) = 0;           // Move from MappableContainer
+  virtual bool InsertAll(const TraversableContainer<Data>&);   // Copy from TraversableContainer
+  virtual bool InsertAll(MappableContainer<Data>&&);           // Move from MappableContainer
 
-  virtual bool RemoveAll(const TraversableContainer<Data>&) = 0;
+  virtual bool RemoveAll(const TraversableContainer<Data>&);
 
-  virtual bool InsertSome(const TraversableContainer<Data>&) = 0;  // Copy
-  virtual bool InsertSome(MappableContainer<Data>&&) = 0;          // Move
+  virtual bool InsertSome(const TraversableContainer<Data>&);  // Copy
+  virtual bool InsertSome(MappableContainer<Data>&&);          // Move
 
-  virtual bool RemoveSome(const TraversableContainer<Data>&) = 0;
+  virtual bool RemoveSome(const TraversableContainer<Data>&);
 
 };
 

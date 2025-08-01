@@ -23,17 +23,16 @@ private:
 
 protected:
 
-  // Default constructor
-  MappableContainer() = default;
+  // ...
   
 public:
   // Destructor
-  virtual ~MappableContainer() noexcept = default;
+  virtual ~MappableContainer() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  MappableContainer &operator=(const MappableContainer &) noexcept = delete; // Copy assignment of abstract types is not possible.
+  MappableContainer &operator=(const MappableContainer &)  = delete; // Copy assignment of abstract types is not possible.
 
   // Move assignment
   MappableContainer &operator=(MappableContainer &&) noexcept = delete; // Move assignment of abstract types is not possible
@@ -42,8 +41,8 @@ public:
 
   // Comparison operators
 
-  bool operator==(const MappableContainer &) const noexcept = delete; // Comparison of abstract types is not possible.
-  bool operator!=(const MappableContainer &) const noexcept = delete; // Comparison of abstract types is not possible.
+  bool operator==(const MappableContainer &) const = delete; // Comparison of abstract types is not possible.
+  bool operator!=(const MappableContainer &) const = delete; // Comparison of abstract types is not possible.
 
   /* ************************************************************************ */
 
@@ -57,9 +56,8 @@ public:
 /* ************************************************************************** */
 
 template <typename Data>
-class PreOrderMappableContainer
-    : public virtual MappableContainer<Data>,
-      public virtual PreOrderTraversableContainer<Data> {
+class PreOrderMappableContainer : public virtual MappableContainer<Data>,
+                                  public virtual PreOrderTraversableContainer<Data> {
 
 private:
   // ...
@@ -81,8 +79,8 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const PreOrderMappableContainer &) const noexcept = delete;
-  bool operator!=(const PreOrderMappableContainer &) const noexcept = delete;
+  bool operator==(const PreOrderMappableContainer &) const = delete;
+  bool operator!=(const PreOrderMappableContainer &) const = delete;
 
   /* ************************************************************************ */
 
@@ -102,9 +100,8 @@ public:
 /* ************************************************************************** */
 
 template <typename Data>
-class PostOrderMappableContainer
-    : public virtual MappableContainer<Data>,
-      public virtual PostOrderTraversableContainer<Data> {
+class PostOrderMappableContainer : public virtual MappableContainer<Data>,
+                                   public virtual PostOrderTraversableContainer<Data> {
 
 private:
   // ...
@@ -126,8 +123,8 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const PostOrderMappableContainer &) const noexcept = delete;
-  bool operator!=(const PostOrderMappableContainer &) const noexcept = delete;
+  bool operator==(const PostOrderMappableContainer &) const = delete;
+  bool operator!=(const PostOrderMappableContainer &) const = delete;
 
   /* ************************************************************************ */
 
@@ -135,7 +132,7 @@ public:
 
   using typename MappableContainer<Data>::MapFun;
 
-  virtual void PostOrderMap(const MapFun) = 0;
+  virtual void PostOrderMap(MapFun) = 0;
 
   /* ************************************************************************ */
 

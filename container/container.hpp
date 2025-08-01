@@ -13,9 +13,6 @@ namespace lasd {
 
 class Container {
 
-private:
-
-  // ...
 
 protected:
 
@@ -57,13 +54,6 @@ public:
 
 class ClearableContainer : public virtual Container {
 
-private:
-
-  // ...
-
-protected:
-
-  // ...
 
 public:
 
@@ -95,13 +85,6 @@ public:
 
 class ResizableContainer : public virtual ClearableContainer {
 
-private:
-
-  // ...
-
-protected:
-
-  // ...
 
 public:
 

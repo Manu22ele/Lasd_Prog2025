@@ -14,15 +14,7 @@ namespace lasd {
 
 template <typename Data>
 class TestableContainer : public virtual Container{
-  // Must extend Container
-
-private:
-
-  // ...
-
-protected:
-
-  // ...
+  
 
 public:
 

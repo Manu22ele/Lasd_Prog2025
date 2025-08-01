@@ -56,10 +56,10 @@ public:
   virtual void Traverse(TraverseFun) const = 0;
 
   template <typename Accumulator>
-  using FoldFun = std::function<Accumulator(const Data &, Accumulator &)>;
+  using FoldFun = std::function<Accumulator(const Data&, const Accumulator&)>;
 
   template <typename Accumulator>
-  Accumulator Fold(FoldFun<Accumulator>, const Accumulator&) const;
+  Accumulator Fold(FoldFun<Accumulator> fun, Accumulator) const;
 
   /* ************************************************************************ */
 
@@ -111,7 +111,7 @@ public:
   using FoldFun = typename TraversableContainer<Data>::template FoldFun<Accumulator>;
 
   template <typename Accumulator>
-  Accumulator PreOrderFold(FoldFun<Accumulator>, const Accumulator&) const;
+  Accumulator PreOrderFold(FoldFun<Accumulator>, Accumulator) const;
 
   /* ************************************************************************ */
 
@@ -164,7 +164,7 @@ public:
   using FoldFun = typename TraversableContainer<Data>::template FoldFun<Accumulator>;
 
   template <typename Accumulator>
-  Accumulator PostOrderFold(FoldFun<Accumulator>, const Accumulator&) const;
+  Accumulator PostOrderFold(FoldFun<Accumulator> fun,  Accumulator) const;
 
   /* ************************************************************************ */
 
