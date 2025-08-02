@@ -1,494 +1,424 @@
-
-#include <stdexcept>
-#include <utility>
-
 namespace lasd {
 
 /* ************************************************************************** */
-
-// Costruttori
+/* Constructors */
 
 template <typename Data>
-SetVec<Data>::SetVec(const TraversableContainer<Data>& con) {
-  size = 0;
-  capacity = con.Size();
-  elements = new Data[capacity];
-
-  con.Traverse([this](const Data& elem) {
-    this->Insert(elem); // inserimento ordinato e senza duplicati
+SetVec<Data>::SetVec(const TraversableContainer<Data>& container) {
+  container.Traverse([this](const Data& dat) {
+    Insert(dat);
   });
 }
 
 template <typename Data>
-SetVec<Data>::SetVec(MappableContainer<Data>&& con) {
-  size = 0;
-  capacity = con.Size();
-  elements = new Data[capacity];
-
-  con.Map([this](Data&& elem) {
-    this->Insert(std::move(elem)); // inserimento ordinato e senza duplicati
+SetVec<Data>::SetVec(MappableContainer<Data>&& container) {
+  container.Map([this](Data& dat) {
+    Insert(std::move(dat));
   });
 }
 
-/* ************************************************************************** */
-
-// Costruttore di copia
 template <typename Data>
-SetVec<Data>::SetVec(const SetVec<Data>& other) {
-  size = other.size;
-  capacity = other.capacity;
-  elements = new Data[capacity]; // Alloca memoria per gli elementi
-
-  // Copia gli elementi da "other" nel nuovo array
-  for (size_t i = 0; i < size; ++i) {
-    elements[i] = other.elements[i]; // Copia ogni elemento
+SetVec<Data>::SetVec(const SetVec& other) {
+  for (unsigned long i = 0; i < other.size; ++i) {
+    Insert(other[i]); 
   }
 }
 
-// Costruttore di move
 template <typename Data>
-SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept {
-  size = other.size;
-  capacity = other.capacity;
-  elements = other.elements;  // Prendi il puntatore agli elementi di "other"
-
-  // Imposta "other" in uno stato valido, evitando doppia deallocazione
-  other.elements = nullptr;  
-  other.size = 0;
-  other.capacity = 0;
+SetVec<Data>::SetVec(SetVec&& other) noexcept {
+  std::swap(elements, other.elements);
+  std::swap(head, other.head);
+  std::swap(tail, other.tail);
+  std::swap(size, other.size);
+  std::swap(capacity, other.capacity);
 }
 
+/* ************************************************************************** */
+/* Destructor */
+
+template <typename Data>
+SetVec<Data>::~SetVec() {
+  if (elements != nullptr) {
+    delete[] elements;
+    elements = nullptr;
+  }
+}
 
 /* ************************************************************************** */
+/* Assignment operators */
 
-// Assegnamento di copia
 template <typename Data>
-inline SetVec<Data>& SetVec<Data>::operator=(const SetVec<Data>& other) {
-  if (this != &other) { // Evita l'auto-assegnamento
-    delete[] elements; // Dealloca la memoria esistente
-
-    size = other.size;
-    capacity = other.capacity;
-    elements = new Data[capacity]; // Alloca nuova memoria
-
-    // Copia gli elementi da "other" nel nuovo array
-    for (size_t i = 0; i < size; ++i) {
-      elements[i] = other.elements[i]; // Copia ogni elemento
-    }
+SetVec<Data>& SetVec<Data>::operator=(const SetVec& other) {
+  if (this != &other) {
+    SetVec tmp(other);
+    std::swap(*this, tmp);
   }
   return *this;
 }
 
-// Assegnamento di move
-template <typename Data> 
-inline SetVec<Data>& SetVec<Data>::operator=(SetVec<Data>&& other) noexcept {
-  if (this != &other) { // Evita l'auto-assegnamento
-    delete[] elements; // Dealloca la memoria esistente
-
-    size = other.size;
-    capacity = other.capacity;
-    elements = other.elements;  // Prendi il puntatore agli elementi di "other"
-
-    // Imposta "other" in uno stato valido, evitando doppia deallocazione
-    other.elements = nullptr;  
-    other.size = 0;
-    other.capacity = 0;
-  }
+template <typename Data>
+SetVec<Data>& SetVec<Data>::operator=(SetVec&& other) noexcept {
+  std::swap(elements, other.elements);
+  std::swap(head, other.head);
+  std::swap(tail, other.tail);
+  std::swap(size, other.size);
+  std::swap(capacity, other.capacity);
   return *this;
 }
 
 /* ************************************************************************** */
+/* Comparison operators */
 
-// Operatori di confronto
 template <typename Data>
-inline bool SetVec<Data>::operator==(const SetVec<Data>& other) const noexcept {
-  if (this == &other) {
-    return true;  // Se sono lo stesso oggetto, sono uguali
+bool SetVec<Data>::operator==(const SetVec& other) const {
+  if (size != other.size) return false;
+  for (unsigned long i = 0; i < size; ++i) {
+    if ((*this)[i] != other[i]) return false;
+  }
+  return true;
+}
+
+template <typename Data>
+bool SetVec<Data>::operator!=(const SetVec& other) const {
+  return !(*this == other);
+}
+
+/* ************************************************************************** */
+/* Access and modification */
+
+template <typename Data>
+unsigned long SetVec<Data>::CircularIndex(unsigned long index) const {
+  return (head + index) % capacity;
+}
+
+template <typename Data>
+const Data& SetVec<Data>::operator[](unsigned long index) const {
+  if (index >= size) throw std::out_of_range("Index out of range");
+  return elements[CircularIndex(index)];
+}
+
+/* ************************************************************************** */
+/* Resize */
+
+template <typename Data>
+void SetVec<Data>::Resize(unsigned long newCap) {
+  if (newCap < size)
+    throw std::length_error("Resize too small");
+
+  Data* newElems = new Data[newCap];
+
+  for (unsigned long i = 0; i < size; ++i)
+    newElems[i] = std::move((*this)[i]);
+
+  if (elements != nullptr) {
+    delete[] elements;
   }
 
-  if (size != other.size) {
-    return false;  // Se le dimensioni sono diverse, i set non sono uguali
-  }
+  elements = newElems;
+  capacity = newCap;
+  head = 0;
+  tail = size % capacity;
+}
 
-  for (size_t i = 0; i < size; ++i) {
-    if (elements[i] != other.elements[i]) {
-      return false;  // Se un elemento è diverso, i set non sono uguali
+/* ************************************************************************** */
+/* Insert & Remove helpers */
+
+template <typename Data>
+void SetVec<Data>::InsertAt(unsigned long index, const Data& dat) {
+  if (size == capacity) {
+    Resize(capacity == 0 ? 1 : capacity * 2);
+  }
+  for (unsigned long i = size; i > index; --i) {
+    elements[CircularIndex(i)] = std::move(elements[CircularIndex(i - 1)]);
+  }
+  elements[CircularIndex(index)] = dat;
+  ++size;
+  tail = (head + size) % capacity;
+}
+
+template <typename Data>
+void SetVec<Data>::InsertAt(unsigned long index, Data&& dat) {
+  if (size == capacity) {
+    Resize(capacity == 0 ? 1 : capacity * 2);
+  }
+  for (unsigned long i = size; i > index; --i) {
+    elements[CircularIndex(i)] = std::move(elements[CircularIndex(i - 1)]);
+  }
+  elements[CircularIndex(index)] = std::move(dat);
+  ++size;
+  tail = (head + size) % capacity;
+}
+
+template <typename Data>
+void SetVec<Data>::RemoveAt(unsigned long index) {
+  for (unsigned long i = index; i < size - 1; ++i) {
+    elements[CircularIndex(i)] = std::move(elements[CircularIndex(i + 1)]);
+  }
+  --size;
+  tail = (head + size) % capacity;
+}
+
+/* ************************************************************************** */
+/* Clear */
+
+template <typename Data>
+void SetVec<Data>::Clear() {
+  delete[] elements;
+  elements = nullptr;
+  size = 0;
+  capacity = 0;
+  head = 0;
+  tail = 0;
+}
+
+/* ************************************************************************** */
+/* Exists */
+
+template <typename Data>
+bool SetVec<Data>::Exists(const Data& dat) const noexcept {
+  return BinarySearch(dat) != -1;
+}
+
+
+/* ************************************************************************** */
+/* Insert / Remove */
+
+template <typename Data>
+bool SetVec<Data>::Insert(const Data& dat) {
+  for (unsigned long i = 0; i < size; ++i) {
+    if (dat == (*this)[i]) return false;
+    if (dat < (*this)[i]) {
+      InsertAt(i, dat);
+      return true;
     }
   }
-
-  return true;  // Se tutti gli elementi sono uguali, i set sono uguali
+  InsertAt(size, dat);
+  return true;
 }
 
-// Operatore di confronto (!=)
 template <typename Data>
-inline bool SetVec<Data>::operator!=(const SetVec<Data>& other) const noexcept {
-  return !(*this == other);  // Inverte il risultato dell'operatore di uguaglianza
-}
-
-/* ************************************************************************** */
-
-// Membri specifici OrderedDictionaryContainer
-
-// Min (ritorna il minimo)
-template <typename Data>
-const Data& SetVec<Data>::Min() const {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-  return elements[0]; // Poiché è ordinato, il primo elemento è il minimo
-}
-
-// MinRemove (ritorna e rimuove il minimo)
-template <typename Data>
-Data SetVec<Data>::MinRemove() {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-  
-  Data min = elements[0];
-  Remove(min);  // Rimuove l'elemento minimo
-  return min;
-}
-
-// RemoveMin (rimuove il minimo)
-template <typename Data>
-void SetVec<Data>::RemoveMin() {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-  
-  Data min = elements[0];
-  Remove(min);  // Rimuove l'elemento minimo
-  return min;
-}
-
-// Max (ritorna il massimo)
-template <typename Data>
-const Data& SetVec<Data>::Max() const {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-  return elements[size - 1]; // Poiché è ordinato, l'ultimo elemento è il massimo
-}
-
-// MaxRemove (ritorna e rimuove il massimo)
-template <typename Data>
-Data SetVec<Data>::MaxRemove() {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-  
-  Data max = elements[size - 1];
-  Remove(max);  // Rimuove l'elemento massimo
-  return max;
-}
-
-// RemoveMax (rimuove il massimo)
-template <typename Data>
-void SetVec<Data>::RemoveMax() {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-  
-  Data max = elements[size - 1];
-  Remove(max);  // Rimuove l'elemento massimo
-  return max;
-}
-
-// Predecessor (ritorna il predecessore dell'elemento, lancia eccezione se non trovato)
-template <typename Data>
-const Data& SetVec<Data>::Predecessor(const Data& elem) const {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-  
-  // Ricerca binaria per trovare l'elemento
-  int index = BinarySearch(elem);
-  if (index <= 0) {
-    throw std::length_error("No predecessor found.");
-  }
-
-  return elements[index - 1]; // Restituisce l'elemento precedente
-}
-
-// PredecessorNRemove (ritorna il predecessore e lo rimuove)
-template <typename Data>
-Data SetVec<Data>::PredecessorNRemove(const Data& elem) {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-
-  // Ricerca binaria per trovare l'elemento
-  int index = BinarySearch(elem);
-  if (index <= 0) {
-    throw std::length_error("No predecessor found.");
-  }
-
-  Data predecessor = elements[index - 1];
-  Remove(predecessor); // Rimuove il predecessore
-  return predecessor;
-}
-
-// RemovePredecessor (rimuove il predecessore dell'elemento)
-template <typename Data>
-void SetVec<Data>::RemovePredecessor(const Data& elem) {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-
-  // Ricerca binaria per trovare l'elemento
-  int index = BinarySearch(elem);
-  if (index <= 0) {
-    throw std::length_error("No predecessor found.");
-  }
-
-  Data predecessor = elements[index - 1];
-  Remove(predecessor); // Rimuove il predecessore
-  return predecessor;
-}
-
-// Successor (ritorna il successore dell'elemento, lancia eccezione se non trovato)
-template <typename Data>
-const Data& SetVec<Data>::Successor(const Data& elem) const {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-
-  // Ricerca binaria per trovare l'elemento
-  int index = BinarySearch(elem);
-  if (index < 0 || index >= size - 1) {
-    throw std::length_error("No successor found.");
-  }
-
-  return elements[index + 1]; // Restituisce il successore
-}
-
-// SuccessorNRemove (ritorna il successore e lo rimuove)
-template <typename Data>
-Data SetVec<Data>::SuccessorNRemove(const Data& elem) {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-
-  // Ricerca binaria per trovare l'elemento
-  int index = BinarySearch(elem);
-  if (index < 0 || index >= size - 1) {
-    throw std::length_error("No successor found.");
-  }
-
-  Data successor = elements[index + 1];
-  Remove(successor); // Rimuove il successore
-  return successor;
-}
-
-// RemoveSuccessor (rimuove il successore dell'elemento)
-template <typename Data>
-void SetVec<Data>::RemoveSuccessor(const Data& elem) {
-  if (size == 0) {
-    throw std::length_error("Set is empty.");
-  }
-
-  // Ricerca binaria per trovare l'elemento
-  int index = BinarySearch(elem);
-  if (index < 0 || index >= size - 1) {
-    throw std::length_error("No successor found.");
-  }
-
-  Data successor = elements[index + 1];
-  Remove(successor); // Rimuove il successore
-  return successor;
-}
-
-
-/* ************************************************************************** */
-
-// Membri specifici DictionaryContainer
-
-template <typename Data>
-bool SetVec<Data>::Insert(const Data& elem) {
-  // Ricerca binaria per determinare se l'elemento esiste già nel set
-  int index = BinarySearch(elem);
-  
-  // Se l'elemento esiste già, non fare nulla
-  if (index >= 0) {
-    return false;
-  }
-
-  // Se l'elemento non esiste, dobbiamo inserirlo nell'ordine corretto
-  // Spostiamo gli elementi per fare spazio per il nuovo elemento
+bool SetVec<Data>::Insert(Data&& dat) {
   if (size == capacity) {
-    Resize(); // Se il vettore è pieno, lo ridimensioniamo
+    Resize(capacity == 0 ? 1 : capacity * 2);
   }
 
-  index = -index - 1;  // Otteniamo l'indice dove inserire l'elemento
-
-  // Spostiamo gli elementi successivi per fare spazio all'elemento
-  for (size_t i = size; i > index; --i) {
-    elements[i] = elements[i - 1];
-  }
-
-  // Inseriamo l'elemento
-  elements[index] = elem;
-  ++size; // Aumentiamo la dimensione del set
-
-  return true;
-}
-
-// Insert (inserisce un elemento nel set, evitando duplicati, versione di move)
-template <typename Data>
-bool SetVec<Data>::Insert(Data&& elem) {
-  // Ricerca binaria per determinare se l'elemento esiste già nel set
-  int index = BinarySearch(elem);
-  
-  // Se l'elemento esiste già, non fare nulla
-  if (index >= 0) {
-    return false;
-  }
-
-  // Se l'elemento non esiste, dobbiamo inserirlo nell'ordine corretto
-  // Spostiamo gli elementi per fare spazio per il nuovo elemento
-  if (size == capacity) {
-    Resize(); // Se il vettore è pieno, lo ridimensioniamo
-  }
-
-  index = -index - 1;  // Otteniamo l'indice dove inserire l'elemento
-
-  // Spostiamo gli elementi successivi per fare spazio all'elemento
-  for (size_t i = size; i > index; --i) {
-    elements[i] = std::move(elements[i - 1]);
-  }
-
-  // Inseriamo l'elemento
-  elements[index] = std::move(elem);
-  ++size; // Aumentiamo la dimensione del set
-
-  return true;
-}
-
-
-// Remove (rimuove un elemento dal set)
-template <typename Data>
-bool SetVec<Data>::Remove(const Data& elem) {
-  // Ricerca binaria per determinare se l'elemento esiste nel set
-  int index = BinarySearch(elem);
-
-  // Se l'elemento non esiste, lanciamo un'eccezione
-  if (index < 0) {
-    throw std::length_error("Element not found.");
-    return false; // Elemento non trovato
-  }
-
-  // Spostiamo gli elementi successivi per colmare il vuoto
-  for (size_t i = index; i < size - 1; ++i) {
-    elements[i] = elements[i + 1];
-  }
-
-  --size; // Decrementiamo la dimensione del set
-
-  return true;
-}
-
-// BinarySearch (ricerca binaria per trovare l'indice dell'elemento nel vettore)
-template <typename Data>
-int SetVec<Data>::BinarySearch(const Data& elem) const {
-  int left = 0;
-  int right = size - 1;
+  long left = 0;
+  long right = size - 1;
+  long insertPos = 0;
+  bool exists = false;
 
   while (left <= right) {
-    int mid = left + (right - left) / 2;
-    if (elements[mid] == elem) {
-      return mid;  // Elemento trovato
-    } else if (elements[mid] < elem) {
+    long mid = (left + right) / 2;
+    const Data& midVal = elements[CircularIndex(mid)];
+
+    if (midVal == dat) {
+      exists = true;
+      break;
+    } else if (midVal < dat) {
       left = mid + 1;
     } else {
       right = mid - 1;
     }
   }
 
-  return -(left + 1);  // Elemento non trovato, ritorna l'indice dove dovrebbe essere
+  if (exists) return false;
+
+  insertPos = left;
+  InsertAt(insertPos, std::move(dat)); 
+  return true;
 }
 
-// Resize (raddoppia la capacità del vettore quando è pieno)
+
 template <typename Data>
-void SetVec<Data>::Resize(unsigned long newCapacity) {
-  if(newCapacity <= capacity) return; // Se la nuova capacità è più piccola o uguale, non facciamo nulla
+bool SetVec<Data>::Remove(const Data& dat) {
+  long index = BinarySearch(dat);
+  if (index == -1) return false;
 
-  Data* new_elements = new Data[newCapacity];
-
-  // Copia gli elementi nel nuovo array
-  for (size_t i = 0; i < size; ++i) {
-    new_elements[i] = std::move(elements[i]);
+  for (unsigned long i = index; i < size - 1; ++i) {
+    elements[CircularIndex(i)] = std::move(elements[CircularIndex(i + 1)]);
   }
 
-  delete[] elements;
-  elements = new_elements;
-  capacity = newCapacity;
+  --size;
+  tail = (head + size) % capacity;
+
+  if (size < capacity / 4 && capacity > 1)
+    Resize(capacity / 2);
+
+  return true;
 }
 
 /* ************************************************************************** */
-
-// Membri specifici LinearContainer
+/* Min / Max */
 
 template <typename Data>
-Data& SetVec<Data>::operator[](size_t index) {
-  if (index >= size) {
-    throw std::out_of_range("Index out of range.");
-  }
-
-  // Per il vettore circolare, l'elemento a [index] si trova
-  // all'interno del range del vettore
-  return elements[(front_index + index) % capacity];
+const Data& SetVec<Data>::Min() const {
+  if (Empty()) throw std::length_error("Empty set");
+  return (*this)[0];
 }
 
-// Operatore [] per l'accesso a un elemento const
 template <typename Data>
-const Data& SetVec<Data>::operator[](size_t index) const {
-  if (index >= size) {
-    throw std::out_of_range("Index out of range.");
-  }
+Data SetVec<Data>::MinNRemove() {
+  if (Empty()) throw std::length_error("Empty set");
+  Data tmp = (*this)[0];
+  RemoveAt(0);
+  return tmp;
+}
 
-  // Per il vettore circolare, l'elemento a [index] si trova
-  // all'interno del range del vettore
-  return elements[(front_index + index) % capacity];
+template <typename Data>
+void SetVec<Data>::RemoveMin() {
+  if (Empty()) throw std::length_error("Empty set");
+  RemoveAt(0);
+}
+
+template <typename Data>
+const Data& SetVec<Data>::Max() const {
+  if (Empty()) throw std::length_error("Empty set");
+  return (*this)[size - 1];
+}
+
+template <typename Data>
+Data SetVec<Data>::MaxNRemove() {
+  if (Empty()) throw std::length_error("Empty set");
+  Data tmp = (*this)[size - 1];
+  RemoveAt(size - 1);
+  return tmp;
+}
+
+template <typename Data>
+void SetVec<Data>::RemoveMax() {
+  if (Empty()) throw std::length_error("Empty set");
+  RemoveAt(size - 1);
 }
 
 /* ************************************************************************** */
-
-// Membri specifici TestableContainer
+/* Predecessor / Successor */
 
 template <typename Data>
-bool SetVec<Data>::Exists(const Data& elem) const noexcept {
-  // Utilizziamo la ricerca binaria per cercare l'elemento
-  size_t low = 0;
-  size_t high = size - 1;
+const Data& SetVec<Data>::Predecessor(const Data& dat) const {
+  const Data* pred = nullptr;
+  for (unsigned long i = 0; i < size; ++i) {
+    if ((*this)[i] < dat) pred = &(*this)[i];
+    else break;
+  }
+  if (!pred) throw std::length_error("No predecessor");
+  return *pred;
+}
 
-  while (low <= high) {
-    size_t mid = low + (high - low) / 2;
-    size_t index = (front_index + mid) % capacity;  // Vettore circolare
-
-    if (elements[index] == elem) {
-      return true;  // Elemento trovato
-    } else if (elements[index] < elem) {
-      low = mid + 1;
-    } else {
-      high = mid - 1;
+template <typename Data>
+Data SetVec<Data>::PredecessorNRemove(const Data& dat) {
+  for (unsigned long i = 0; i < size; ++i) {
+    if ((*this)[i] < dat) {
+      if (i + 1 == size || (*this)[i + 1] >= dat) {
+        Data tmp = (*this)[i];
+        RemoveAt(i);
+        return tmp;
+      }
     }
   }
-
-  return false;  // Elemento non trovato
+  throw std::length_error("No predecessor");
 }
-
-/* ************************************************************************** */
-
-// Membri specifici ClearableContainer
 
 template <typename Data>
-void SetVec<Data>::Clear() noexcept {
-  size = 0;  // Ripristina la dimensione a 0
-  // Non è necessario liberare la memoria, poiché la capacità non cambia
-  // La memoria resterà allocata per la futura crescita del container.
+void SetVec<Data>::RemovePredecessor(const Data& dat) {
+  (void)PredecessorNRemove(dat);
+}
+
+template <typename Data>
+const Data& SetVec<Data>::Successor(const Data& dat) const {
+  for (unsigned long i = 0; i < size; ++i) {
+    if ((*this)[i] > dat) return (*this)[i];
+  }
+  throw std::length_error("No successor");
+}
+
+template <typename Data>
+Data SetVec<Data>::SuccessorNRemove(const Data& dat) {
+  for (unsigned long i = 0; i < size; ++i) {
+    if ((*this)[i] > dat) {
+      Data tmp = (*this)[i];
+      RemoveAt(i);
+      return tmp;
+    }
+  }
+  throw std::length_error("No successor");
+}
+
+template <typename Data>
+void SetVec<Data>::RemoveSuccessor(const Data& dat) {
+  (void)SuccessorNRemove(dat);
 }
 
 /* ************************************************************************** */
+/* InsertAll / RemoveAll / InsertSome / RemoveSome */
 
+template <typename Data>
+bool SetVec<Data>::InsertAll(const TraversableContainer<Data>& container) {
+  bool modified = false;
+  container.Traverse([&](const Data& dat) { modified |= Insert(dat); });
+  return modified;
 }
+
+template <typename Data>
+bool SetVec<Data>::InsertAll(MappableContainer<Data>&& container) {
+  bool modified = false;
+  container.Map([&](Data& dat) { modified |= Insert(std::move(dat)); });
+  return modified;
+}
+
+template <typename Data>
+bool SetVec<Data>::RemoveAll(const TraversableContainer<Data>& container) {
+  bool modified = false;
+  container.Traverse([&](const Data& dat) { modified |= Remove(dat); });
+  return modified;
+}
+
+template <typename Data>
+bool SetVec<Data>::InsertSome(const TraversableContainer<Data>& container) {
+  bool modified = false;
+  container.Traverse([&](const Data& dat) {
+    if (!modified && Insert(dat)) modified = true;
+  });
+  return modified;
+}
+
+template <typename Data>
+bool SetVec<Data>::InsertSome(MappableContainer<Data>&& container) {
+  bool modified = false;
+  container.Map([&](Data& dat) {
+    if (!modified && Insert(std::move(dat))) modified = true;
+  });
+  return modified;
+}
+
+template <typename Data>
+bool SetVec<Data>::RemoveSome(const TraversableContainer<Data>& container) {
+  bool modified = false;
+  container.Traverse([&](const Data& dat) {
+    if (!modified && Remove(dat)) modified = true;
+  });
+  return modified;
+}
+
+template <typename Data>
+long SetVec<Data>::BinarySearch(const Data& dat) const {
+  if (size == 0) return -1;
+
+  long left = 0;
+  long right = size - 1;
+
+  while (left <= right) {
+    long mid = (left + right) / 2;
+    const Data& midVal = elements[CircularIndex(mid)];
+
+    if (midVal == dat)
+      return mid;
+    else if (midVal < dat)
+      left = mid + 1;
+    else
+      right = mid - 1;
+  }
+
+  return -1;
+}
+
+} // namespace lasd

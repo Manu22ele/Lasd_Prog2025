@@ -4,7 +4,6 @@
 
 /* ************************************************************************** */
 
-#include "../container/container.hpp"
 #include "../container/linear.hpp"
 
 /* ************************************************************************** */
@@ -14,8 +13,8 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class List : public virtual ClearableContainer,
-             public virtual MutableLinearContainer<Data> {
+class List : public virtual MutableLinearContainer<Data>,
+             public virtual ClearableContainer {
   // Must extend MutableLinearContainer<Data>,
   //             ClearableContainer
 
@@ -26,13 +25,12 @@ private:
 protected:
 
   // using Container::???;
-  using  Container::size;
 
   struct Node {
 
     // Data
-    Data value{};      
-    Node* next{nullptr};
+    Data element;      
+    Node* next = nullptr;
 
     Node() = default;
 
@@ -45,23 +43,14 @@ protected:
 
     /* ********************************************************************** */
 
-    // Copy constructor
-    Node(const Node &);
-
-    // Move constructor
-    Node(Node &&) noexcept;
-
-    /* ********************************************************************** */
-
     // Destructor
     virtual ~Node();
 
     /* ********************************************************************** */
 
     // Comparison operators
-    bool operator==(const Node &) const noexcept ;
-
-    bool operator!=(const Node &) const noexcept;
+    bool operator==(const Node &) const;
+    bool operator!=(const Node &) const;
 
     /* ********************************************************************** */
 
@@ -71,9 +60,16 @@ protected:
 
   };
 
-  // ...
-  Node *head{nullptr}; // Pointer to the first node
-  Node *tail{nullptr}; // Pointer to the last node
+  
+  Node *head = nullptr; // Pointer to the first node
+  Node *tail = nullptr; // Pointer to the last node
+  using Container::size;
+
+
+  Node* CopyList(const Node*);
+  void ClearList();
+  void RemoveAt(unsigned long);
+
 
 public:
 
@@ -97,8 +93,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  virtual ~List() noexcept;
-
+  ~List();
   /* ************************************************************************ */
 
   // Copy assignment
@@ -113,12 +108,8 @@ public:
   using LinearContainer<Data>::operator!=;
 
   // Comparison operators
-  virtual bool operator==(const List &) const noexcept;
-  virtual bool operator!=(const List &) const noexcept;
-
-  // Overriding LinearContainer comparison operators to avoid hiding
-  virtual bool operator==(const LinearContainer<Data>&) const noexcept override;
-  virtual bool operator!=(const LinearContainer<Data>&) const noexcept override;
+  bool operator==(const List &) const noexcept;
+  bool operator!=(const List &) const noexcept;
 
   /* ************************************************************************ */
 
@@ -138,35 +129,22 @@ public:
 
   // Specific member functions (inherited from MutableLinearContainer)
   
-  // Override MutableLinearContainer's operator[] (must throw std::out_of_range when out of range)
-  virtual Data& operator[](unsigned long) override; 
-  virtual const Data& operator[](unsigned long) const override;
-
-  // Override MutableLinearContainer member (must throw std::length_error when empty)
-  virtual Data& Front() override;
-  virtual const Data& Front() const override;
-
-  // type Back() specifiers; // Override MutableLinearContainer member (must throw std::length_error when empty)
-  virtual Data& Back() override;
-  virtual const Data& Back() const override;
+  using typename MappableContainer<Data>::MapFun;
+  Data& operator[](unsigned long) override;
+  Data& Front() override;
+  Data& Back() override;
+  void Map(MapFun) override;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
-  //(operator[], Front, Back) already declared above
+  const Data& operator[](unsigned long) const override;
+  const Data& Front() const override;
+  const Data& Back() const override;
 
   /* ************************************************************************ */
 
-  // Specific member function (inherited from MappableContainer)
-
-  // using typename MappableContainer<Data>::MapFun;
-  using typename MappableContainer<Data>::MapFun;
-
-  // Override MappableContainer member
-  void Map(MapFun) override;
-
-  /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderMappableContainer)
 
@@ -209,7 +187,7 @@ public:
   // Specific member function (inherited from ClearableContainer)
 
   // Override ClearableContainer member
-  void Clear() noexcept override;
+  void Clear() override;
 
 
 protected:

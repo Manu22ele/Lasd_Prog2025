@@ -1,4 +1,3 @@
-
 #ifndef SETLST_HPP
 #define SETLST_HPP
 
@@ -6,7 +5,6 @@
 
 #include "../set.hpp"
 #include "../../list/list.hpp"
-#include <stdexcept>
 
 /* ************************************************************************** */
 
@@ -15,10 +13,11 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class SetLst : public virtual Set<Data>,
-               public virtual List<Data> {
+class SetLst : virtual public Set<Data>,
+               virtual protected List<Data>,
+               virtual public ResizableContainer{
   // Must extend Set<Data>,
-  //             List<Data>
+  //             ResizableContainer
 
 private:
 
@@ -26,14 +25,16 @@ private:
 
 protected:
 
-  // using Container::???;
   using Container::size;
-  using typename List<Data>::Node;
-  using List<Data>::head;
-
-  // ...
 
 public:
+
+  // Bring base class methods into scope to avoid -Woverloaded-virtual warnings
+  using LinearContainer<Data>::operator==;
+  using LinearContainer<Data>::operator!=;
+  using LinearContainer<Data>::Traverse;
+  using LinearContainer<Data>::PreOrderTraverse;
+  using LinearContainer<Data>::PostOrderTraverse;
 
   // Default constructor
   SetLst() = default;
@@ -41,89 +42,88 @@ public:
   /* ************************************************************************ */
 
   // Specific constructors
-  // A set obtained from a TraversableContainer
-  SetLst(const TraversableContainer<Data>&); // A set obtained from a TraversableContainer
-  SetLst(MappableContainer<Data>&&); // A set obtained from a MappableContainer
+  SetLst(const TraversableContainer<Data>&); // Copy from TraversableContainer
+  SetLst(MappableContainer<Data>&&);         // Move from MappableContainer
 
   /* ************************************************************************ */
 
   // Copy constructor
-  SetLst(const SetLst<Data>&); 
+  SetLst(const SetLst&);
 
   // Move constructor
-  SetLst(SetLst<Data>&&) noexcept;
+  SetLst(SetLst&&) noexcept;
 
   /* ************************************************************************ */
 
   // Destructor
-  virtual ~SetLst() = default;
+  ~SetLst() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  virtual SetLst<Data>& operator=(const SetLst<Data>&);
+  SetLst& operator=(const SetLst&);
 
   // Move assignment
-  virtual SetLst<Data>& operator=(SetLst<Data>&&) noexcept;
+  SetLst& operator=(SetLst&&) noexcept;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  virtual bool operator==(const SetLst<Data>&) const noexcept;
-  virtual bool operator!=(const SetLst<Data>&) const noexcept;
+  bool operator==(const SetLst&) const;
+  bool operator!=(const SetLst&) const;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from OrderedDictionaryContainer)
 
-  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  virtual Data Min() const;
-  virtual Data MinRemove() const;
-  virtual Data RemoveMin() const;
+  const Data& Min() const override;
+  Data MinNRemove() override;
+  void RemoveMin() override;
 
-  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  virtual Data Max() const; 
-  virtual Data MaxRemove() const;
-  virtual Data RemoveMax() const;
-  
-  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  virtual Data Predecessor(const Data&) const;
-  virtual Data PredecessorNRemove(const Data&);
-  virtual Data RemovePredecessor(const Data&);
+  const Data& Max() const override;
+  Data MaxNRemove() override;
+  void RemoveMax() override;
 
-  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  virtual Data Successor(const Data&) const; 
-  virtual Data SuccessorNRemove(const Data&);
-  virtual Data RemoveSuccessor(const Data&);
+  const Data& Predecessor(const Data&) const override;
+  Data PredecessorNRemove(const Data&) override;
+  void RemovePredecessor(const Data&) override;
+
+  const Data& Successor(const Data&) const override;
+  Data SuccessorNRemove(const Data&) override;
+  void RemoveSuccessor(const Data&) override;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from DictionaryContainer)
 
-  virtual void Insert(const Data&);       // Insert by copy
-  virtual void Insert(Data&&);             // Insert by move
-  virtual void Remove(const Data&);        // Remove an element
-
+  bool Insert(const Data&) override; // Copy
+  bool Insert(Data&&) override;      // Move
+  bool Remove(const Data&) override;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
-  virtual Data& operator[](size_t index);              // Access an element by index (throws std::out_of_range if out of range)
-  virtual const Data& operator[](size_t index) const;   // Const access to an element by index (throws std::out_of_range if out of range)
+  const Data& operator[](unsigned long) const override;
 
-
-  /* ************************************************************************** */
+  /* ************************************************************************ */
 
   // Specific member function (inherited from TestableContainer)
 
-  virtual bool Exists(const Data&) const noexcept;
+  bool Exists(const Data&) const noexcept override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from ClearableContainer)
 
-  virtual void Clear() noexcept override;
+  void Clear() override;
+
+  /* ************************************************************************ */
+
+  // Specific member function (inherited from ResizableContainer)
+
+  // Resize the container to the given size by removing elements from the back if the size is reduced.
+  void Resize(unsigned long) override;
 
 protected:
 

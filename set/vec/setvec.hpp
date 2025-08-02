@@ -1,4 +1,3 @@
-
 #ifndef SETVEC_HPP
 #define SETVEC_HPP
 
@@ -6,6 +5,7 @@
 
 #include "../set.hpp"
 #include "../../vector/vector.hpp"
+#include <stdexcept>
 
 /* ************************************************************************** */
 
@@ -21,115 +21,102 @@ class SetVec : public virtual Set<Data>,
 
 private:
 
-  // ...
-  
+  // Auxiliary attributes for circular buffer
+  Data* elements = nullptr;         // Dynamic array
+  unsigned long head = 0;           // Index of first element
+  unsigned long tail = 0;           // Index of insertion point (after last)
+  unsigned long capacity = 0;       // Allocated capacity
 
 protected:
 
-  // using Container::???;
   using Container::size;
-  size_t capacity = 0;
-  Data* elements = nullptr;
-  size_t front_index = 0;
-  int BinarySearch(const Data&) const;
-  
+
+  // Utility methods
+  unsigned long CircularIndex(unsigned long) const;
+  void ExpandCapacity();
+  void ReduceCapacity();
+  void InsertAt(unsigned long, const Data&);
+  void InsertAt(unsigned long, Data&&);
+  void RemoveAt(unsigned long);
+  long BinarySearch(const Data&) const;
+
 public:
+
+  // Bring base class methods into scope
+  using LinearContainer<Data>::operator==;
+  using LinearContainer<Data>::operator!=;
 
   // Default constructor
   SetVec() = default;
 
-  /* ************************************************************************ */
-
   // Specific constructors
-  // A set obtained from a TraversableContainer
-  SetVec(const TraversableContainer<Data>& con);
-
-  // A set obtained from a MappableContainer
-  SetVec(MappableContainer<Data>&& con);
-
-  /* ************************************************************************ */
+  SetVec(const TraversableContainer<Data>&); // Copy from TraversableContainer
+  SetVec(MappableContainer<Data>&&);         // Move from MappableContainer
 
   // Copy constructor
-  SetVec(const SetVec<Data>& other);
+  SetVec(const SetVec&);
 
   // Move constructor
-  SetVec(SetVec<Data>&& other) noexcept;
-
-  /* ************************************************************************ */
+  SetVec(SetVec&&) noexcept;
 
   // Destructor
-  virtual ~SetVec() = default;
-
-  /* ************************************************************************ */
+  ~SetVec();
 
   // Copy assignment
-  SetVec<Data>& operator=(const SetVec<Data>& other);
+  SetVec& operator=(const SetVec&);
 
   // Move assignment
-  SetVec<Data>& operator=(SetVec<Data>&& other) noexcept;
-
-  /* ************************************************************************ */
+  SetVec& operator=(SetVec&&) noexcept;
 
   // Comparison operators
-  virtual bool operator==(const SetVec<Data>& other) const noexcept;
-  virtual bool operator!=(const SetVec<Data>& other) const noexcept;
+  bool operator==(const SetVec&) const;
+  bool operator!=(const SetVec&) const;
 
-  /* ************************************************************************ */
+  // OrderedDictionary functions
+  const Data& Min() const override;
+  Data MinNRemove() override;
+  void RemoveMin() override;
 
-  // Specific member functions (inherited from OrderedDictionaryContainer)
+  const Data& Max() const override;
+  Data MaxNRemove() override;
+  void RemoveMax() override;
 
-  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  virtual const Data& Min() const override;
-  Data MinRemove();
-  virtual void RemoveMin() override;
+  const Data& Predecessor(const Data&) const override;
+  Data PredecessorNRemove(const Data&) override;
+  void RemovePredecessor(const Data&) override;
 
-  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  virtual const Data& Max() const override;
-  Data MaxRemove();
-  virtual void RemoveMax() override;
+  const Data& Successor(const Data&) const override;
+  Data SuccessorNRemove(const Data&) override;
+  void RemoveSuccessor(const Data&) override;
 
-  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  virtual const Data& Predecessor(const Data&) const override;
-  Data PredecessorNRemove(const Data&);
-  virtual void RemovePredecessor(const Data&) override;
+  // Dictionary functions
+  bool Insert(const Data&) override;    // Copy
+  bool Insert(Data&&) override;         // Move
+  bool Remove(const Data&) override;
 
-  // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  virtual const Data& Successor(const Data&) const override;
-  Data SuccessorNRemove(const Data&);
-  virtual void RemoveSuccessor(const Data&) override; 
+  bool InsertAll(const TraversableContainer<Data>&) override;
+  bool InsertAll(MappableContainer<Data>&&) override;
 
-  /* ************************************************************************ */
+  bool RemoveAll(const TraversableContainer<Data>&) override;
 
-  // Specific member functions (inherited from DictionaryContainer)
+  bool InsertSome(const TraversableContainer<Data>&) override;
+  bool InsertSome(MappableContainer<Data>&&) override;
 
-  virtual bool Insert(const Data&) override;  // Override DictionaryContainer member (copy of the value)
-  virtual bool Insert(Data&&) override;       // Override DictionaryContainer member (move of the value)
-  virtual bool Remove(const Data&) override;  // Override DictionaryContainer member
+  bool RemoveSome(const TraversableContainer<Data>&) override;
 
-  void Resize(unsigned long) override;  // Override ResizableContainer member (resizes the container)
+  // LinearContainer functions
+  const Data& operator[](unsigned long) const override;
 
-  /* ************************************************************************ */
+  // TestableContainer function
+  bool Exists(const Data&) const noexcept override;
 
-  // Specific member functions (inherited from LinearContainer)
+  // ClearableContainer function
+  void Clear() override;
 
-  Data& operator[](size_t);
-  const Data& operator[](size_t) const;
-
-  /* ************************************************************************** */
-
-  // Specific member function (inherited from TestableContainer)
-
-  virtual bool Exists(const Data&) const noexcept override;
-
-  /* ************************************************************************ */
-
-  // Specific member function (inherited from ClearableContainer)
-
-  virtual void Clear() noexcept override;
-
-protected:
-
-  // Auxiliary functions, if necessary!
+  // ResizableContainer functions
+  void Resize(unsigned long) override;
+  bool Empty() const noexcept override { return (size == 0); }
+  unsigned long Size() const noexcept override { return size; }
 
 };
 

@@ -4,6 +4,7 @@
 /* ************************************************************************** */
 
 #include "mappable.hpp"
+#include "traversable.hpp"
 
 /* ************************************************************************** */
 
@@ -152,31 +153,18 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  SortableLinearContainer& operator=(const SortableLinearContainer&) noexcept = delete;
+  SortableLinearContainer& operator=(const SortableLinearContainer&)  = delete;
 
   // Move assignment
   SortableLinearContainer& operator=(SortableLinearContainer&&) noexcept = delete;
 
   /* ************************************************************************ */
-  
-  using LinearContainer<Data>::operator==;
-  using LinearContainer<Data>::operator!=;
 
-  // Comparison operators
-
-  virtual bool operator==(const SortableLinearContainer &) const noexcept;
-
-  virtual bool operator!=(const SortableLinearContainer &) const noexcept;
 
   // Specific member function
-  virtual void Sort() noexcept = 0;
-
-protected:
-
-  // Auxiliary member functions
-
-  void insertionSort(unsigned long, unsigned long) noexcept;
-
+  
+  virtual void Sort();
+  
 };
 
 /* ************************************************************************** */

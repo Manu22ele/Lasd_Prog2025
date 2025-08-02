@@ -1,226 +1,265 @@
-/* ************************************************************************** */
-
 #include <stdexcept>
-#include <utility>
-
-/* ************************************************************************** */
 
 namespace lasd {
 
-// Vector
-/* ************************************************************************** */
-
-// Constructors and Destructors
-
-template <typename Data>
-Vector<Data>::Vector(const TraversableContainer<Data>& container)
-    : Vector(container.Size()) {  // delegating constructor
-  unsigned long i = 0;
-  container.Traverse([this, &i](const Data& data) {
-    elements[i++] = data;
-  });
-}
-
-
-template <typename Data>
-Vector<Data>::Vector(MappableContainer<Data>&& container)
-    : Vector(container.Size()) {
-  unsigned long i = 0;
-  container.Map([this, &i](Data& data) {
-    elements[i++] = std::move(data);
-  });
-}
-
-template <typename Data>
-Vector<Data>::Vector(const Vector<Data>& vec)
-    : Vector(vec.size) {
-  for (unsigned long i = 0; i < size; ++i) {
-    elements[i] = vec.elements[i];
+  /* ************************************************************************** */
+  /* Constructors */
+  
+  template <typename Data>
+  Vector<Data>::Vector(const ulong newsize) {
+    elements_ = new Data[newsize]();
+    size = newsize;
   }
-}
-
-
-template <typename Data>
-Vector<Data>::Vector(Vector<Data>&& vec) noexcept {
-  std::swap(size, vec.size);
-  std::swap(elements, vec.elements);
-}
-
-// Operators
-
-template <typename Data>
-Vector<Data>& Vector<Data>::operator=(const Vector<Data>& vec) {
-  Vector<Data> temp{vec};       // Costruttore di copia
-  std::swap(temp, *this);       // Scambia contenuti
-  return *this;
-}
-
-template <typename Data>
-Vector<Data> &Vector<Data>::operator=(Vector<Data> &&vec) noexcept {
-  std::swap(size, vec.size);
-  std::swap(elements, vec.elements);
-  return *this;
-}
-
-template <typename Data>
-bool Vector<Data>::operator==(const Vector<Data> &vec) const noexcept {
-  if (size != vec.size) {
-    return false;
+  
+  template <typename Data>
+  Vector<Data>::Vector(const TraversableContainer<Data>& container) {
+    size = container.Size();
+    elements_ = new Data[size];
+    ulong i = 0;
+    container.Traverse([&](const Data& dat) {
+      elements_[i++] = dat;
+    });
   }
-
-  for (unsigned long i = 0; i < size; i++) {
-    if (elements[i] != vec[i]) {
-      return false;
+  
+  template <typename Data>
+  Vector<Data>::Vector(MappableContainer<Data>&& container) {
+    size = container.Size();
+    elements_ = new Data[size];
+    ulong i = 0;
+    container.Map([&](Data& dat) {
+      std::swap(elements_[i++], dat);
+    });
+  }
+  
+  template <typename Data>
+  Vector<Data>::Vector(const Vector& vec) {
+    size = vec.size;
+    elements_ = new Data[size];
+    for (ulong i = 0; i < size; ++i)
+      elements_[i] = vec.elements_[i];
+  }
+  
+  template <typename Data>
+  Vector<Data>::Vector(Vector&& vec) noexcept {
+    std::swap(elements_, vec.elements_);
+    std::swap(size, vec.size);
+  }
+  
+  template <typename Data>
+  Vector<Data>::~Vector() {
+    delete[] elements_;
+  }
+  
+  /* ************************************************************************** */
+  /* Assignment operators */
+  
+  template <typename Data>
+  Vector<Data>& Vector<Data>::operator=(const Vector& vec) {
+    if (this != &vec) {
+      Vector<Data> tmp(vec);
+      std::swap(*this, tmp);
+    }
+    return *this;
+  }
+  
+  template <typename Data>
+  Vector<Data>& Vector<Data>::operator=(Vector&& vec) noexcept {
+    std::swap(elements_, vec.elements_);
+    std::swap(size, vec.size);
+    return *this;
+  }
+  
+  /* ************************************************************************** */
+  /* Comparison operators */
+  
+  template <typename Data>
+  bool Vector<Data>::operator==(const LinearContainer<Data>& con) const noexcept {
+    if (size != con.Size()) return false;
+    for (ulong i = 0; i < size; ++i)
+      if (!(elements_[i] == con[i])) return false;
+    return true;
+  }
+  
+  template <typename Data>
+  bool Vector<Data>::operator!=(const LinearContainer<Data>& con) const noexcept {
+    return !(*this == con);
+  }
+  
+  /* ************************************************************************** */
+  /* Access functions */
+  
+  template <typename Data>
+  const Data& Vector<Data>::operator[](const ulong index) const {
+    if (index >= size) throw std::out_of_range("Access out of range");
+    return elements_[index];
+  }
+  
+  template <typename Data>
+  Data& Vector<Data>::operator[](const ulong index) {
+    if (index >= size) throw std::out_of_range("Access out of range");
+    return elements_[index];
+  }
+  
+  template <typename Data>
+  const Data& Vector<Data>::Front() const {
+    if (size == 0) throw std::length_error("Vector is empty");
+    return elements_[0];
+  }
+  
+  template <typename Data>
+  Data& Vector<Data>::Front() {
+    if (size == 0) throw std::length_error("Vector is empty");
+    return elements_[0];
+  }
+  
+  template <typename Data>
+  const Data& Vector<Data>::Back() const {
+    if (size == 0) throw std::length_error("Vector is empty");
+    return elements_[size - 1];
+  }
+  
+  template <typename Data>
+  Data& Vector<Data>::Back() {
+    if (size == 0) throw std::length_error("Vector is empty");
+    return elements_[size - 1];
+  }
+  
+  /* ************************************************************************** */
+  /* Clear / Resize */
+  
+  template <typename Data>
+  void Vector<Data>::Clear() {
+    delete[] elements_;
+    elements_ = nullptr;
+    size = 0;
+  }
+  
+  template <typename Data>
+  void Vector<Data>::Resize(const ulong newsize) {
+    if (newsize == 0) {
+      Clear();
+    } else {
+      Data* tmp = new Data[newsize]();
+      ulong min = (newsize < size) ? newsize : size;
+      for (ulong i = 0; i < min; ++i)
+        tmp[i] = std::move(elements_[i]);
+      delete[] elements_;
+      elements_ = tmp;
+      size = newsize;
     }
   }
-  return true;
-}
-
-template <typename Data>
-bool Vector<Data>::operator!=(const Vector<Data> &vec) const noexcept {
-  return !(*this == vec);
-}
-
-template <typename Data>
-const Data &Vector<Data>::operator[](unsigned long i) const {
-  if (i >= size) {
-    throw std::out_of_range("This Vector has not that many elements");
+  
+  /* ************************************************************************** */
+  /* Mappable */
+  
+  template <typename Data>
+  void Vector<Data>::Map(typename MappableContainer<Data>::MapFun fun) {
+    for (ulong i = 0; i < size; ++i)
+      fun(elements_[i]);
   }
-  return elements[i];
-}
-
-template <typename Data>
-Data &Vector<Data>::operator[](unsigned long i) {
-  if (i >= size) {
-    throw std::out_of_range("This Vector has not that many elements");
+  
+  template <typename Data>
+  void Vector<Data>::PreOrderMap(typename MappableContainer<Data>::MapFun fun) {
+    Map(fun);
   }
-  return elements[i];
-}
-
-
-// Overrided Methods
-
-template <typename Data> inline void Vector<Data>::Clear() {
-  delete[] elements;
-  size = 0;
-  elements = nullptr;
-}
-
-template <typename Data> void Vector<Data>::Resize(unsigned long s) {
-  if (s == size) {
-    return;
+  
+  template <typename Data>
+  void Vector<Data>::PostOrderMap(typename MappableContainer<Data>::MapFun fun) {
+    for (long i = size - 1; i >= 0; --i)
+      fun(elements_[i]);
   }
-
-  if (s == 0) {
-    Clear();
-    return;
+  
+  /* ************************************************************************** */
+  /* Traversable */
+  
+  template <typename Data>
+  void Vector<Data>::Traverse(typename TraversableContainer<Data>::TraverseFun fun) const {
+    for (ulong i = 0; i < size; ++i)
+      fun(elements_[i]);
   }
-
-  Data *temp{new Data[s]{}};
-
-  unsigned long min{std::min(s, size)};
-
-  for (unsigned long i{0}; i < min; ++i)
-    std::swap(elements[i], temp[i]);
-
-  std::swap(elements, temp);
-  delete[] temp;
-
-  size = s;
-}
-
-template <typename Data> inline const Data &Vector<Data>::Front() const {
-  if (size != 0)
-    return elements[0];
-  throw std::length_error("The Vector is empty");
-}
-
-template <typename Data> inline Data &Vector<Data>::Front() {
-  if (size != 0)
-    return elements[0];
-  throw std::length_error("The Vector is empty");
-}
-template <typename Data> inline const Data &Vector<Data>::Back() const {
-  if (size != 0)
-    return elements[size - 1];
-  throw std::length_error("The Vector is empty");
-}
-template <typename Data> inline Data &Vector<Data>::Back() {
-  if (size != 0)
-    return elements[size - 1];
-  throw std::length_error("The Vector is empty");
-}
-
-// Metodi per TraversableContainer
-template <typename Data>
-void Vector<Data>::Traverse(typename TraversableContainer<Data>::TraverseFun fun) const {
-  for (unsigned long i = 0; i < size; ++i) {
-    fun(elements[i]);
+  
+  template <typename Data>
+  void Vector<Data>::PreOrderTraverse(typename TraversableContainer<Data>::TraverseFun fun) const {
+    Traverse(fun);
   }
-}
-
-// PreOrderTraverse: in un vettore è lo stesso di Traverse
-template <typename Data>
-void Vector<Data>::PreOrderTraverse(typename TraversableContainer<Data>::TraverseFun fun) const {
-  Traverse(fun);  // Per un vettore, è identico
-}
-
-// PostOrderTraverse: in un vettore è lo stesso di Traverse
-template <typename Data>
-void Vector<Data>::PostOrderTraverse(typename TraversableContainer<Data>::TraverseFun fun) const {
-  Traverse(fun);  // Per un vettore, è identico
-}
-
-// Metodi per MappableContainer
-template <typename Data>
-void Vector<Data>::Map(typename MappableContainer<Data>::MapFun fun) {
-  for (unsigned long i = 0; i < size; ++i) {
-    fun(elements[i]);
+  
+  template <typename Data>
+  void Vector<Data>::PostOrderTraverse(typename TraversableContainer<Data>::TraverseFun fun) const {
+    for (long i = size - 1; i >= 0; --i)
+      fun(elements_[i]);
   }
-}
-
-// PreOrderMap: in un vettore è lo stesso di Map
-template <typename Data>
-void Vector<Data>::PreOrderMap(typename MappableContainer<Data>::MapFun fun) {
-  Map(fun);  // Per un vettore, è identico
-}
-
-// PostOrderMap: in un vettore è lo stesso di Map
-template <typename Data>
-void Vector<Data>::PostOrderMap(typename MappableContainer<Data>::MapFun fun) {
-  Map(fun);  // Per un vettore, è identico
-}
-
-/* ************************************************************************** */
-
-template <typename Data>
-SortableVector<Data>& SortableVector<Data>::operator=(const SortableVector<Data>& con) {
-  if (this != &con) {
-    SortableVector<Data> temp(con);  // Crea un oggetto temporaneo
-    std::swap(*this, temp);  // Scambia i dati
+  
+  // Auxiliary member function
+  
+  template <typename Data>
+  void Vector<Data>::InsertAt(unsigned long index, const Data& dat) {
+    if (index > size) throw std::out_of_range("Index out of range");
+    Resize(size + 1);
+    for (unsigned long i = size - 1; i > index; --i) {
+      elements_[i] = std::move(elements_[i - 1]);
+    }
+    elements_[index] = dat;
   }
-  return *this;
-}
+  
+  template <typename Data>
+  void Vector<Data>::InsertAt(unsigned long index, Data&& dat) {
+    if (index > size) throw std::out_of_range("Index out of range");
+    Resize(size + 1);
+    for (unsigned long i = size - 1; i > index; --i) {
+      elements_[i] = std::move(elements_[i - 1]);
+    }
+    elements_[index] = std::move(dat);
+  }  
 
-template <typename Data>
-SortableVector<Data>& SortableVector<Data>::operator=(SortableVector<Data>&& con) noexcept {
-  if (this != &con) {
-    std::swap(this->size, con.size);
-    std::swap(this->elements, con.elements);
+  /* ************************************************************************** */
+  /* SortableVector */
+  
+  template <typename Data>
+  SortableVector<Data>::SortableVector(const ulong size)
+      : Vector<Data>(size) {}
+
+  template <typename Data>
+  SortableVector<Data>::SortableVector(const TraversableContainer<Data>& container)
+      : Vector<Data>(container) {}
+
+  template <typename Data>
+  SortableVector<Data>::SortableVector(MappableContainer<Data>&& container)
+      : Vector<Data>(std::move(container)) {}
+  
+  template <typename Data>
+  SortableVector<Data>::SortableVector(const SortableVector& vec)
+      : Vector<Data>(vec) {}
+  
+  template <typename Data>
+  SortableVector<Data>::SortableVector(SortableVector&& vec) noexcept
+      : Vector<Data>(std::move(vec)) {}
+  
+  template <typename Data>
+  SortableVector<Data>& SortableVector<Data>::operator=(const SortableVector& vec) {
+    Vector<Data>::operator=(vec);
+    return *this;
   }
-  return *this;
-}
+  
+  template <typename Data>
+  SortableVector<Data>& SortableVector<Data>::operator=(SortableVector&& vec) noexcept {
+    Vector<Data>::operator=(std::move(vec));
+    return *this;
+  }
+  
+  template <typename Data>
+  void lasd::SortableVector<Data>::Sort() {
+    for (unsigned long i = 1; i < this->Size(); ++i) {
+      Data temp = std::move((*this)[i]);
+      long j = i - 1;
 
-
-// SortableVector
-
-template <typename Data>
-void SortableVector<Data>::Sort() noexcept {
-  // Chiamiamo il metodo di ordinamento fornito da Vector,
-  this->insertionSort(0, this->size - 1);
-}
-
-template class SortableVector<int>;    // Aggiungi per i tipi che usi
-template class SortableVector<double>;
-
-} // namespace lasd
+      while (j >= 0 && temp < (*this)[j]) {
+        (*this)[j + 1] = std::move((*this)[j]);
+        --j;
+      }
+      (*this)[j + 1] = std::move(temp);
+    }
+  }
+  
+  /* ************************************************************************** */
+  
+  } // namespace lasd  
