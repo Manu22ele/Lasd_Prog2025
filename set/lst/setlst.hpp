@@ -30,6 +30,7 @@ protected:
 public:
 
   // Bring base class methods into scope to avoid -Woverloaded-virtual warnings
+  using List<Data>::operator=;
   using LinearContainer<Data>::operator==;
   using LinearContainer<Data>::operator!=;
   using LinearContainer<Data>::Traverse;
