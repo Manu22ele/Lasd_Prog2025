@@ -1,10 +1,10 @@
-
 #ifndef HEAP_HPP
 #define HEAP_HPP
 
 /* ************************************************************************** */
 
 #include "../container/linear.hpp"
+#include "../container/container.hpp" // Per ClearableContainer
 
 /* ************************************************************************** */
 
@@ -13,9 +13,8 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class Heap {
-  // Must extend SortableLinearContainer<Data>,
-  //             ClearableContainer
+class Heap : public virtual SortableLinearContainer<Data>,
+             public virtual ClearableContainer {
 
 private:
 
@@ -24,23 +23,23 @@ protected:
 public:
 
   // Destructor
-  // ~Heap() specifiers
+  virtual ~Heap() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types is not possible.
+  Heap<Data>& operator=(const Heap<Data>&) = delete; // Copy assignment of abstract types is not possible.
 
   // Move assignment
-  // type operator=(argument); // Move assignment of abstract types is not possible.
+  Heap<Data>& operator=(Heap<Data>&&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
   // Specific member functions
 
-  // type IsHeap(argument) specifiers;
+  virtual bool IsHeap() const noexcept = 0;
 
-  // type Heapify(argument) specifiers;
+  virtual void Heapify() noexcept = 0;
 
 };
 

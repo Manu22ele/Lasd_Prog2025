@@ -1,4 +1,3 @@
-
 #ifndef PQHEAP_HPP
 #define PQHEAP_HPP
 
@@ -14,69 +13,67 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class PQHeap {
-  // Must extend PQ<Data>,
-  // Could extend HeapVec<Data>
+class PQHeap : public virtual PQ<Data>,
+               public HeapVec<Data> {
 
 private:
 
-  // ...
+  unsigned long capacity = 0; // capacità fisica allocata 
 
 protected:
 
-  // using Container::???;
+  using Container::size;              // dimensione logica (elementi effettivi)
+  using Vector<Data>::operator[];     // accesso agli elementi
 
-  // ...
+  using HeapVec<Data>::HeapifyDown;
+  using HeapVec<Data>::HeapifyUp;
 
 public:
 
   // Default constructor
-  // PQHeap() specifiers;
+  PQHeap() = default;
 
   /* ************************************************************************ */
 
   // Specific constructors
-  // PQHeap(argument) specifiers; // A priority queue obtained from a TraversableContainer
-  // PQHeap(argument) specifiers; // A priority queue obtained from a MappableContainer
+  PQHeap(const TraversableContainer<Data>&); // Costruisce da container
+  PQHeap(MappableContainer<Data>&&);         // Costruisce da container rvalue
 
   /* ************************************************************************ */
 
   // Copy constructor
-  // PQHeap(argument) specifiers;
+  PQHeap(const PQHeap&);
 
   // Move constructor
-  // PQHeap(argument) specifiers;
-
-  /* ************************************************************************ */
+  PQHeap(PQHeap&&) noexcept;
 
   // Destructor
-  // ~PQHeap() specifiers;
+  ~PQHeap() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument) specifiers;
+  PQHeap& operator=(const PQHeap&);
 
   // Move assignment
-  // type operator=(argument) specifiers;
+  PQHeap& operator=(PQHeap&&) noexcept;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from PQ)
 
-  // type Tip(argument) specifiers; // Override PQ member (must throw std::length_error when empty)
-  // type RemoveTip(argument) specifiers; // Override PQ member (must throw std::length_error when empty)
-  // type TipNRemove(argument) specifiers; // Override PQ member (must throw std::length_error when empty)
+  const Data& Tip() const override;       // Ritorna il top (errore se vuoto)
+  void RemoveTip() override;              // Rimuove il top (errore se vuoto)
+  Data TipNRemove() override;             // Estrae e rimuove top (errore se vuoto)
 
-  // type Insert(argument) specifiers; // Override PQ member (Copy of the value)
-  // type Insert(argument) specifiers; // Override PQ member (Move of the value)
+  void Insert(const Data&) override;      // Inserimento (copia)
+  void Insert(Data&&) override;           // Inserimento (move)
 
-  // type Change(argument) specifiers; // Override PQ member (Copy of the value)
-  // type Change(argument) specifiers; // Override PQ member (Move of the value)
+  void Change(const unsigned long, const Data&) override; // Cambia (copia)
+  void Change(const unsigned long, Data&&) override;      // Cambia (move)
 
-protected:
-
-  // Auxiliary functions, if necessary!
+  void Clear() override;                  // Pulisce tutta la struttura
+  void Resize(const unsigned long);       // Nuovo Resize che aggiorna solo capacity, non size
 
 };
 
@@ -87,3 +84,4 @@ protected:
 #include "pqheap.cpp"
 
 #endif
+
